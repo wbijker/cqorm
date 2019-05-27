@@ -13,10 +13,14 @@ namespace cqorm
     public class DataSource<T>
     {
         private string _tableName;
+        private QueryBuilder _builder;
+        private QuerySource _querySource;
 
         public DataSource(string tableName)
         {
             _tableName = tableName;
+            _builder = new QueryBuilder();
+            _querySource = new QuerySource { TableSource = tableName, Alias = "a" };
         }
 
         public DataSource()
@@ -25,6 +29,24 @@ namespace cqorm
 
         public AggregateSource<Q, T> GroupBy<Q>(Expression<Func<T, Q>> clause)
         {
+            // e => e.Field
+            if (clause is LambdaExpression lambda)
+            {
+                // e
+                if (clause.Parameters[0] is ParameterExpression p)
+                {
+                    // p.name == "E"
+                    // p.Type == typeof(T)
+                }
+                // e => e.Field
+                if (lambda.Body is MemberExpression member)
+                {
+                    // member.Member.Name == "Field"
+                    // member.Member
+                    // _querySource.Source
+                }
+                
+            }
             // return this;
             return new AggregateSource<Q, T>();
         }

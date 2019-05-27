@@ -9,16 +9,16 @@ namespace cqorm
             var q = new QueryBuilder();
             var s = new QuerySource { TableSource = "Entries", Alias = "s" };
 
-            string sql = q.Generate(new QuerySelect
-            {
-                Fields = new QueryField[2]
-                {
-                    new QueryField { Name = "StationId", Source = s },
-                    new QueryField { Name = "EntryDate", Source = s },
-                },
-                Source = s,
-            });
+            var sel = new QuerySelect();
 
+            sel.Fields = new QueryField[2]
+            {
+                new QueryField { Name = "StationId", Parent = sel },
+                new QueryField { Name = "EntryDate", Parent = sel },
+            };
+            sel.Source = s;
+
+            string sql = q.Generate(sel);
             Console.WriteLine(sql);
         }
 
@@ -55,7 +55,7 @@ namespace cqorm
 
         public void Run()
         {
-            QueryBuilder();
+            // QueryBuilder();
             ScissorTest();
             return;
 
