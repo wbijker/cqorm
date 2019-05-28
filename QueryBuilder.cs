@@ -71,36 +71,27 @@ namespace cqorm
         // SELECT
         public List<Field> Fields { get; set; }
         // JOIN [SOURCE] on [ConditionalExpression...]
-        public QueryJoin Join { get; set; }
-        public ConditionalExpression Where { get; set; }
+        public QueryJoin Join { get; set; } 
+        public FieldMath Where { get; set; }
+        // public SelectLimit Limit { get; set; }
+
         // WHERE [ConditionalExpression...] 
         // ORDER BY [FieldName...] ASC/DESC
         // GROUP BY [FieldName...]
         // HAVING [HavingExpression] 
-
-
         // public QueryJoin Join { get; set; }
         // // GROUP BY field1, field2, field3
         // public QueryField[] GroupBy { get; set;}
-
-
         // public WhereExpression Where { get; set; }
     }
 
     public class QueryJoin
     {
         public SelectQuery Source { get; set; }
-        public ConditionalExpression On { get; set; }
+        public FieldMath On { get; set; }
     }
 
-    public class ConditionalExpression
-    {
-        public Field Left { get; set; }
-        public string Operator { get; set; }
-        public Field Right { get; set; }
-    }
-
-
+    
     // a + b == 10
     // func(a)
     // a.name == 'string'

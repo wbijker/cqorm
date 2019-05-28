@@ -145,6 +145,11 @@ namespace cqorm
         Minus,
         Multiply,
         Divide,
+        Equal,
+        BiggerThan,
+        LessThan,
+        BiggerEquanThan,
+        LessEqualThan,
         Or,
         And,
     }
