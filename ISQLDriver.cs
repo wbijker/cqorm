@@ -25,7 +25,7 @@ namespace cqorm
             }
             if (query.Where != null)
             {
-                sql += $" WHERE {GenerateField(query.Where.Left)} {OperatorStr(query.Where.Operator)} {GenerateField(query.Where.Right)}";
+                sql += " WHERE " + GenerateField(query.Where);
             }
             return sql;
         }
@@ -44,11 +44,11 @@ namespace cqorm
                     return "/";
                 case FieldMathOperator.Equal:
                     return "=";
-                case FieldMathOperator.BiggerThan:
+                case FieldMathOperator.GreaterThan:
                     return ">";
                 case FieldMathOperator.LessThan:
                     return "<";
-                case FieldMathOperator.BiggerEquanThan:
+                case FieldMathOperator.GreaterEqualThan:
                     return ">=";
                 case FieldMathOperator.LessEqualThan:
                     return "<=";
@@ -95,7 +95,7 @@ namespace cqorm
             }
             if (f is FieldMath math)
             {
-                return $"{GenerateField(math.Left)} {math.Operator} {GenerateField(math.Right)}";
+                return $"{GenerateField(math.Left)} {OperatorStr(math.Operator)} {GenerateField(math.Right)}";
             }
             throw new NotImplementedException(f.ToString());
         }

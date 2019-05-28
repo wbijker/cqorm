@@ -47,7 +47,10 @@ namespace cqorm
                 // member.Member
                 return new FieldName(member.Member.Name, _query.From);
             }
-        
+            if (exp is BinaryExpression bin)
+            {
+                return ParseBinaryExpression(bin);
+            }
             throw new NotImplementedException();            
         }
 
@@ -98,6 +101,30 @@ namespace cqorm
             if (nodeType == ExpressionType.Equal)
             {
                 return FieldMathOperator.Equal;
+            }
+            if (nodeType == ExpressionType.OrElse || nodeType == ExpressionType.Or)
+            {
+                return FieldMathOperator.Or;
+            }
+            if (nodeType == ExpressionType.Add)
+            {
+                return FieldMathOperator.And;
+            }
+            if (nodeType == ExpressionType.GreaterThan)
+            {
+                return FieldMathOperator.GreaterThan;
+            }
+            if (nodeType == ExpressionType.GreaterThanOrEqual)
+            {
+                return FieldMathOperator.GreaterEqualThan;
+            }
+            if (nodeType == ExpressionType.LessThan)
+            {
+                return FieldMathOperator.LessThan;
+            }
+            if (nodeType == ExpressionType.LessThanOrEqual)
+            {
+                return FieldMathOperator.LessEqualThan;
             }
 
             throw new NotImplementedException();

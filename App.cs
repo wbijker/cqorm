@@ -31,8 +31,12 @@ namespace cqorm
         }
         public void Simple()
         {
-            var a = new DataSource<User>()
-                .Where(u => u.Name.ToLower() == "willem")
+            // var a = new DataSource<User>()
+            //     .Where(u => u.Name.ToLower() == "willem")
+            //     .FetchSingle();
+
+            var b = new DataSource<User>()
+                .Where(u => u.Name.ToLower() == "willem" || u.Age > 10)
                 .FetchSingle();
         }
 
