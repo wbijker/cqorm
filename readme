@@ -1,0 +1,55 @@
+Most ORM's today try to do too much.
+Code first Query ORM is different.
+
+It's a code first approach to write SQL queries without.
+-Write more efficient queries by expressing yourself in SQL.
+-No fancy tracking system. Just SQL
+-Translates all to SQL. No local complex executing plans..
+-But keep the fast and safe code first approach
+-Database agnostic
+
+// Simple, but difficult achievable through other ORMS's
+
+db
+    .Products
+    .Delete(p => p.Value <= 10)
+
+// Delete from Products where Value <= 10
+
+db
+    .Products
+    .Update(p => p.Value, p => p.Value * 2)
+    .Where(p => p.Active);
+
+// Update Products set Value = Value * 2 Where Active
+
+Be explicit in the types of joins. Make use of the coalesce
+
+var res = a
+    .InnerJoin(b, (s,e) => s.StationId == e.StationId)
+    .InnerJoin(Stations, (s, u) => s.Right.StationId == u.Id)
+    .Select(n => new {
+        UId = n.Right.Id,
+        Scissors = n.Left.Left.Scissors,
+        Entries = n.Left.Right.Entries
+    })
+    .FetchArray();
+
+
+Multiple sub queries with aggregates
+    var b = db.Enquiries
+        .GroupBy(e => e.UserId);
+        .Select(e => {
+            UserID = e.Key,
+            Used = e.Count()
+        })
+        .InnerJoin(db.Topup.., on, (l, r) => new { Used = L, Topup = r; })
+        .InnerJoin(db.Users, .., (prev, r) => new { Userd = prev.Used, Topup = prev.Topup, Users = r) })
+        .Select(u => {
+            Used = u.Left.Right.Topups - u.left.Count(),
+            Name = u.Right.Name,
+        })
+        
+Or just some SQL statements
+
+
