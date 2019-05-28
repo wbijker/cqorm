@@ -14,13 +14,13 @@ namespace cqorm
     {
         private string _tableName;
         private QueryBuilder _builder;
-        private QuerySource _querySource;
+        // private QuerySource _querySource;
 
         public DataSource(string tableName)
         {
             _tableName = tableName;
             _builder = new QueryBuilder();
-            _querySource = new QuerySource { TableSource = tableName, Alias = "a" };
+            // _querySource = new QuerySource { TableSource = tableName, Alias = "a" };
         }
 
         public DataSource()

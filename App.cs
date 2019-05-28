@@ -6,20 +6,25 @@ namespace cqorm
     {
         private void QueryBuilder()
         {
-            var q = new QueryBuilder();
-            var s = new QuerySource { TableSource = "Entries", Alias = "s" };
+            // .Case(s => s.Value, c =>
+            //     .WhenThen(0, 10)
+            //     .WhenThen(1, 88)
+            //     .Else(0)
+            // );
+            // var q = new QueryBuilder();
+            // var s = new QuerySource { TableSource = "Entries", Alias = "s" };
 
-            var sel = new QuerySelect();
+            // var sel = new QuerySelect();
 
-            sel.Fields = new QueryField[2]
-            {
-                new QueryField { Name = "StationId", Parent = sel },
-                new QueryField { Name = "EntryDate", Parent = sel },
-            };
-            sel.Source = s;
+            // sel.Fields = new QueryField[2]
+            // {
+            //     new QueryField { Name = "StationId", Source = sel },
+            //     new QueryField { Name = "EntryDate", Source = sel },
+            // };
+            // sel.Source = s;
 
-            string sql = q.Generate(sel);
-            Console.WriteLine(sql);
+            // string sql = q.Generate(sel);
+            Console.WriteLine("");
         }
 
         private void ScissorTest()
