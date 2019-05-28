@@ -9,33 +9,19 @@ namespace cqorm
         {
 
             var query = new SelectQuery();
+            query.From = new FromTable
+            {
+                Table = "Stations",
+                Alias = "s"
+            };
             query.Fields = new List<Field> 
             {
-                Field.Name("Value", query)
+                Field.Name("Value", query.From)
             };
 
             ISQLDriver driver = new SQLLiteDriver();
-            driver.Generate(query);
+            Console.WriteLine(driver.Generate(query));
 
-            // .Case(s => s.Value, c =>
-            //     .WhenThen(0, 10)
-            //     .WhenThen(1, 88)
-            //     .Else(0)
-            // );
-            // var q = new QueryBuilder();
-            // var s = new QuerySource { TableSource = "Entries", Alias = "s" };
-
-            // var sel = new QuerySelect();
-
-            // sel.Fields = new QueryField[2]
-            // {
-            //     new QueryField { Name = "StationId", Source = sel },
-            //     new QueryField { Name = "EntryDate", Source = sel },
-            // };
-            // sel.Source = s;
-
-            // string sql = q.Generate(sel);
-            Console.WriteLine("");
         }
 
         private void ScissorTest()
@@ -71,8 +57,8 @@ namespace cqorm
 
         public void Run()
         {
-            // QueryBuilder();
-            ScissorTest();
+            QueryBuilder();
+            // ScissorTest();
             return;
 
             // var db = new Database();

@@ -66,13 +66,20 @@ namespace cqorm
         public string Table { get; set; }
     }
 
-    public class SelectQuery : From
+    public class FromSubQuery : From
+    {
+        public SelectQuery Query { get; set; }
+    }
+
+    public class SelectQuery
     {
         // SELECT
         public List<Field> Fields { get; set; }
         // JOIN [SOURCE] on [ConditionalExpression...]
         public QueryJoin Join { get; set; } 
         public FieldMath Where { get; set; }
+
+        public From From { get; set; }
         // public SelectLimit Limit { get; set; }
 
         // WHERE [ConditionalExpression...] 
