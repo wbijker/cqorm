@@ -14,6 +14,10 @@ namespace cqorm
         public string Generate(SelectQuery query)
         {
             string sql = "SELECT ";
+            if (query.Fields == null)
+            {
+                throw new Exception("No fields to select");
+            }
             sql += string.Join(", ", query.Fields.Select(f => GenerateField(f)));
             sql += " FROM ";
             if (query.From is FromTable table) {

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace cqorm
@@ -12,19 +13,24 @@ namespace cqorm
 
     public class DataSource<T>
     {
-        private string _tableName;
-        private QueryBuilder _builder;
-        // private QuerySource _querySource;
-
-        public DataSource(string tableName)
-        {
-            _tableName = tableName;
-            _builder = new QueryBuilder();
-            // _querySource = new QuerySource { TableSource = tableName, Alias = "a" };
-        }
+        private SelectQuery _query;
 
         public DataSource()
         {
+            _query = new SelectQuery();
+            _query.From = new FromTable
+            {
+                Table = typeof(T).Name,
+                Alias = "u"
+            };
+
+            // query.Fields = new List<Field> 
+            // {
+            //     Field.Name("Username", query.From),
+            //     Field.Name("Password", query.From),
+            //     Field.Name("Email", query.From)
+            // };
+            
         }
 
         public AggregateSource<Q, T> GroupBy<Q>(Expression<Func<T, Q>> clause)
@@ -68,7 +74,18 @@ namespace cqorm
 
         public DataSource<T> Where(Expression<Func<T, bool>> clause)
         {
-            return this;
+            var parse = new ExpressionParser(_query);
+            var ff = parse.ParseField(clause);
+            if (ff is FieldMath math)
+            {
+                _query.Where = math;
+                return this;
+            }
+            throw new Exception("Where should be a binary expression")  ;
+            // query.Where = new FieldMath(
+            //     Field.Function("lower", Field.Name("Username", query.From)), 
+            //     FieldMathOperator.Equal,
+            //     Field.ConstantString("Willem"));
         }
 
         public int Delete(Expression<Func<T, bool>> clause)
@@ -78,6 +95,19 @@ namespace cqorm
 
         public T FetchSingle()
         {
+            // If not select was spesified select all from original source
+            if (_query.Fields == null)
+            {
+                var props = typeof(T).GetProperties();
+                _query.Fields = props
+                    .Select(p => (Field)new FieldName(p.Name, _query.From))
+                    .ToList();
+            }
+                
+                
+            ISQLDriver driver = new SQLLiteDriver();
+            Console.WriteLine("Fetch Single");
+            Console.WriteLine(driver.Generate(_query));
             return default(T);
         }
 
