@@ -11,13 +11,19 @@ namespace cqorm
             var query = new SelectQuery();
             query.From = new FromTable
             {
-                Table = "Stations",
-                Alias = "s"
+                Table = "User",
+                Alias = "u"
             };
             query.Fields = new List<Field> 
             {
-                Field.Name("Value", query.From)
+                Field.Name("Username", query.From),
+                Field.Name("Password", query.From),
+                Field.Name("Email", query.From)
             };
+            query.Where = new FieldMath(
+                Field.Function("lower", Field.Name("Username", query.From)), 
+                FieldMathOperator.Equal,
+                Field.ConstantString("Willem"));
 
             ISQLDriver driver = new SQLLiteDriver();
             Console.WriteLine(driver.Generate(query));

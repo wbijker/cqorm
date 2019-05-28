@@ -29,9 +29,14 @@ namespace cqorm
     public abstract class Field
     {
         // either constant, name, aggregate, distinct, fieldfunction, fieldExpression
-        public static Constant Constant(string value)
+        public static Constant ConstantString(string value)
         {
-            return new Constant(value);
+            return new Constant(ConstantType.String, value);
+        }
+
+        public static Constant ConstantInt(string value)
+        {
+            return new Constant(ConstantType.Int, value);
         }
 
         public static FieldName Name(string name, From source)
@@ -59,17 +64,30 @@ namespace cqorm
             return new FieldMath(a, op, b);
         }
 
+        public static FieldParameter Param(string name)
+        {
+            return new FieldParameter(name);
+        }
+    }
+
+    public enum ConstantType
+    {
+        Int,
+        String,
+        Double,
+        Binary,
     }
 
     public class Constant : Field
     {
-        // For now just use string
-        public Constant(string value)
+        public Constant(ConstantType type, object value)
         {
             this.Value = value;
+            this.Type = type;
 
         }
-        public string Value { get; set; }
+        public ConstantType Type { get; set; }
+        public object Value { get; set; }
     }
 
     // a.Name
@@ -152,6 +170,16 @@ namespace cqorm
         LessEqualThan,
         Or,
         And,
+    }
+
+    public class FieldParameter : Field
+    {
+        public string Name { get; set; }
+
+        public FieldParameter(string name)
+        {
+            Name = name;
+        }
     }
 
     public class FieldMath : Field
