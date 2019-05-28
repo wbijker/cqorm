@@ -37,6 +37,16 @@ namespace cqorm
             {
                 return ParseMethodCall(call);
             }
+            if (exp is MemberExpression member)
+            {
+                // member.Member.Name == "name"
+                if (member.Expression is ParameterExpression p)
+                {
+                    // p.Name == "u"
+                }
+                // member.Member
+                return new FieldName(member.Member.Name, _query.From);
+            }
         
             throw new NotImplementedException();            
         }
@@ -56,16 +66,24 @@ namespace cqorm
 
         private Field ParseMethodCall(MethodCallExpression call)
         {
-             // call.Arguments
-            if (call.Object is MemberExpression member)
+            if (call.Type == typeof(string))
             {
-                // member.Member.Name == "name"
-                if (member.Expression is ParameterExpression p)
-                {
-                    // p.Name == "u"
-                }
-                // member.Member
-                return new FieldName(member.Member.Name, _query.From);
+                // All string functions here
+                // with call.Argu,ents
+                // call.Method.Name == "ToLower";
+                return new FieldFunction(ToStringFunctionType(call.Method.Name), ParseField(call.Object));
+            }
+            throw new NotImplementedException();
+        }
+
+        private FieldFunctionType ToStringFunctionType(string name)
+        {
+            switch (name)
+            {
+                case "ToLower":
+                    return FieldFunctionType.Lower;
+                case "ToUpper":
+                    return FieldFunctionType.Upper;
             }
             throw new NotImplementedException();
         }

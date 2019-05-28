@@ -54,7 +54,7 @@ namespace cqorm
             return new FieldRowFunction(function, Arguments);
         }
 
-        public static FieldFunction Function(string function, params Field[] Arguments)
+        public static FieldFunction Function(FieldFunctionType function, params Field[] Arguments)
         {
             return new FieldFunction(function, Arguments);
         }
@@ -144,16 +144,29 @@ namespace cqorm
         public List<Field> Arguments { get; set; }
     }
 
+    public enum FieldFunctionType
+    {
+        Lower,
+        Upper,
+        Substring,
+        LeftTrim,
+        RightTrim,
+        Trim,
+        Length,
+        Replace,
+        Contains
+    }
+
     // Coalesce, string functions, date functions, number functions
     public class FieldFunction : Field
     {
-        public FieldFunction(string function, params Field[] Arguments)
+        public FieldFunction(FieldFunctionType function, params Field[] Arguments)
         {
             this.Function = function;
             this.Arguments = new List<Field>(Arguments);
 
         }
-        public string Function { get; set; }
+        public FieldFunctionType Function { get; set; }
         public List<Field> Arguments { get; set; }
     }
 

@@ -21,7 +21,7 @@ namespace cqorm
                 Field.Name("Email", query.From)
             };
             query.Where = new FieldMath(
-                Field.Function("lower", Field.Name("Username", query.From)), 
+                Field.Function(FieldFunctionType.Lower, Field.Name("Username", query.From)), 
                 FieldMathOperator.Equal,
                 Field.ConstantString("Willem"));
 

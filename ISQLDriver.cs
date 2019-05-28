@@ -100,9 +100,16 @@ namespace cqorm
             throw new NotImplementedException(f.ToString());
         }
 
-        private object GenerateFunction(string function)
+        private object GenerateFunction(FieldFunctionType function)
         {
-            return function;
+            switch (function)
+            {
+                case FieldFunctionType.Lower:
+                    return "lower";
+                case FieldFunctionType.Upper:
+                    return "upper";
+            }
+            throw new NotImplementedException();
         }
 
         private object GenerateRowFunction(FieldRowFunctionType function)
