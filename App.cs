@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace cqorm
 {
@@ -6,6 +7,16 @@ namespace cqorm
     {
         private void QueryBuilder()
         {
+
+            var query = new SelectQuery();
+            query.Fields = new List<Field> 
+            {
+                Field.Name("Value", query)
+            };
+
+            ISQLDriver driver = new SQLLiteDriver();
+            driver.Generate(query);
+
             // .Case(s => s.Value, c =>
             //     .WhenThen(0, 10)
             //     .WhenThen(1, 88)
