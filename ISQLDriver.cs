@@ -21,7 +21,7 @@ namespace cqorm
             sql += string.Join(", ", query.Fields.Select(f => GenerateField(f)));
             sql += " FROM ";
             if (query.From is FromTable table) {
-                sql += table.Table;
+                sql += $"{table.Table} {table.Alias}";
             }
             if (query.Where != null)
             {
