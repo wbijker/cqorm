@@ -15,6 +15,11 @@ namespace cqorm
     {
         private SelectQuery _query;
 
+        public DataSource(SelectQuery query)
+        {
+            _query = query;
+        }
+
         public DataSource()
         {
             _query = new SelectQuery();
@@ -130,7 +135,10 @@ namespace cqorm
         // The momemtn you select something the source changes
         public DataSource<Q> Select<Q>(Expression<Func<T, Q>> select)
         {
-            return new DataSource<Q>();
+            var parse = new ExpressionParser(_query);
+            parse.ParseField(select);
+            
+            return new DataSource<Q>(_query);
         }
     }
 

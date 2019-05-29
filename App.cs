@@ -37,6 +37,10 @@ namespace cqorm
 
             var b = new DataSource<User>()
                 .Where(u => u.Name.ToLower() == "willem" || u.Age > 10)
+                .Select(u => new
+                {
+                    Id = u.Id
+                })
                 .FetchSingle();
         }
 

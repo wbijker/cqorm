@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace cqorm
@@ -17,6 +18,19 @@ namespace cqorm
             if (lambda.Body is BinaryExpression exp)
             {
                 return ParseBinaryExpression(exp);
+            }
+            // .Select(s => new {...})
+            // New anonymous object
+            if (lambda.Body is NewExpression newx)
+            {
+                // newx.Constructor
+                _query.Fields = new List<Field>();
+                foreach (var arg in newx.Arguments)
+                {
+                    var field = ParseField(arg);
+                    _query.Fields.Add(field);
+                }
+                return null;
             }
             throw new NotImplementedException();
         }
