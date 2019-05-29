@@ -44,9 +44,9 @@ namespace cqorm
             return new FieldName(name, source);
         }
 
-        public static FieldAggregate Aggregate(AggregateFunction function, Field argument)
+        public static FieldAggregate Aggregate(AggregateFunction function, params Field[] arguments)
         {
-            return new FieldAggregate(function, argument);
+            return new FieldAggregate(function, new List<Field>(arguments));
         }
 
         public static FieldRowFunction RowFunction(FieldRowFunctionType function, params Field[] Arguments)
@@ -130,14 +130,14 @@ namespace cqorm
     // count(a.id), sum(b.value)
     public class FieldAggregate : Field
     {
-        public FieldAggregate(AggregateFunction function, Field argument)
+        public FieldAggregate(AggregateFunction function, List<Field> arguments)
         {
             this.Function = function;
-            this.Argument = argument;
+            this.Arguments = arguments;
 
         }
         public AggregateFunction Function { get; set; }
-        public Field Argument { get; set; }
+        public List<Field> Arguments { get; set; }
     }
 
 

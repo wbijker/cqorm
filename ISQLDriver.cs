@@ -90,17 +90,17 @@ namespace cqorm
             }
             if (f is FieldAggregate aggregate)
             {
-                var arg = GenerateField(aggregate.Argument);
-                return $"{GenerateFunction(aggregate.Function)}({arg})";
+                var args = GenerateFields(aggregate.Arguments);
+                return $"{GenerateFunction(aggregate.Function)}({args})";
             }
             if (f is FieldRowFunction row) 
             {
-                var args = String.Join(", ", row.Arguments.Select(a => GenerateField(a)));
+                var args = GenerateFields(row.Arguments);
                 return $"{GenerateRowFunction(row.Function)}({args})";
             }
             if (f is FieldFunction func)
             {
-                var args = String.Join(", ", func.Arguments.Select(a => GenerateField(a)));
+                var args = GenerateFields(func.Arguments);
                 return $"{GenerateFunction(func.Function)}({args})";
             }
             if (f is FieldMath math)
@@ -138,6 +138,8 @@ namespace cqorm
             {
                 case AggregateFunction.Average:
                     return "AVERAGE";
+            case AggregateFunction.Count:
+                    return "COUNT";
             }
             throw new Exception($"Could not map aggregate function '{function.ToString()}'");
         }
