@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -23,7 +24,21 @@ namespace cqorm
 
         public AggregateSource<Q, T> GroupBy<Q>(Expression<Func<T, Q>> clause)
         {
-            return new AggregateSource<Q, T>(_query);
+            // Single or Multiple groupbys
+            // GroupBy(e => e.field)
+            // GroupBy(e => new { e.field1. e.field2 })
+            var parse = new ExpressionParser(_query);
+            var field = parse.ParseField(clause);
+            if (field is FieldName)
+            {
+                // Single group by 
+                // Select default groupby item?
+                // _query.Fields = new List<Field> {...}
+                _query.GroupBy = new List<FieldName> { field as FieldName };
+                return new AggregateSource<Q, T>(_query);
+            }
+            // todo: cater for multiples
+            throw new Exception("Invalid GroupBy Expression. It can only be a field name or a group object");
         }
 
         public DataSource<T> Union(DataSource<T> source)
@@ -62,8 +77,6 @@ namespace cqorm
             return 1;
         }
 
-      
-
         public DataSource<T> Update<Q>(Expression<Func<T, Q>> update, Q newValue)
         {
             return this;
@@ -78,7 +91,16 @@ namespace cqorm
         public DataSource<Q> Select<Q>(Expression<Func<T, Q>> select)
         {
             var parse = new ExpressionParser(_query);
-            parse.ParseField(select);
+            var field = parse.ParseField(select);
+            if (field is FieldName)
+            {
+                _query.Fields = new List<Field> { field };
+            }
+            if (field is FieldList list)
+            {
+                _query.Fields = list.Fields;
+            }
+
             
             return new DataSource<Q>(_query);
         }

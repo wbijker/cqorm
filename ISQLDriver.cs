@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace cqorm
@@ -11,6 +12,11 @@ namespace cqorm
 
     public class SQLLiteDriver : ISQLDriver
     {
+        private string GenerateFields(IEnumerable<Field> list)
+        {
+            return String.Join(", ", list.Select(f => GenerateField(f)));
+        }
+
         public string Generate(SelectQuery query)
         {
             string sql = "SELECT ";
@@ -18,7 +24,7 @@ namespace cqorm
             {
                 throw new Exception("No fields to select");
             }
-            sql += string.Join(", ", query.Fields.Select(f => GenerateField(f)));
+            sql += GenerateFields(query.Fields);
             sql += " FROM ";
             if (query.From is FromTable table) {
                 sql += $"{table.Table} {table.Alias}";
@@ -26,6 +32,10 @@ namespace cqorm
             if (query.Where != null)
             {
                 sql += " WHERE " + GenerateField(query.Where);
+            }
+            if (query.GroupBy?.Count() > 0)
+            {
+                sql += " GROUP BY " + GenerateFields(query.GroupBy);
             }
             return sql;
         }

@@ -68,6 +68,11 @@ namespace cqorm
         {
             return new FieldParameter(name);
         }
+
+        public static FieldList List(params Field[] fields)
+        {
+            return new FieldList(fields);
+        }
     }
 
     public enum ConstantType
@@ -76,6 +81,16 @@ namespace cqorm
         String,
         Double,
         Binary,
+    }
+
+    public class FieldList: Field
+    {
+        public List<Field> Fields { get; set; }
+
+        public FieldList(IEnumerable<Field> fields)
+        {
+            Fields = new List<Field>(fields);
+        }
     }
 
     public class Constant : Field

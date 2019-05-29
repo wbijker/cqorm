@@ -14,8 +14,24 @@ namespace cqorm
 
         public DataSource<P> Select<P>(Expression<Func<AggregateSource<T, Q>, P>> select)
         {
+            var parse = new ExpressionParser(_query);
+            var field = parse.ParseField(select);
+            if (field is FieldName)
+            {
+                // Single
+            }
+            if (field is FieldList)
+            {
+                // Multiple
+            }
+
+            // .Select(e => new {
+            //         StationId = e.Key,
+            //         Items = e.Count()
+            //     })
+
             // ExpParser.ProcessExpression(select);
-            return new DataSource<P>();
+            return new DataSource<P>(_query);
         }
 
         public AggregateSource<T, Q> Distinct()

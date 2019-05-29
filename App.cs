@@ -30,12 +30,8 @@ namespace cqorm
 
         }
         public void Simple()
-        {
-            // var a = new DataSource<User>()
-            //     .Where(u => u.Name.ToLower() == "willem")
-            //     .FetchSingle();
-
-            var b = new DataSource<User>()
+        {            
+            new DataSource<User>()
                 .Where(u => u.Name.ToLower() == "Jabo" || u.Age > 28)
                 .Select(u => new
                 {
@@ -44,9 +40,13 @@ namespace cqorm
                 })
                 .FetchSingle();
 
-            // new DataSource<ScissorsEntry>()
-            //     .GroupBy(e => e.StationId)
-            //     .FetchSingle();
+            new DataSource<ScissorsEntry>()
+                .GroupBy(e => e.StationId)
+                .Select(e => new {
+                    StationId = e.Key,
+                    Items = e.Count()
+                })
+                .FetchSingle();
         }
 
         public void Run()
