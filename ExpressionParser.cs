@@ -74,6 +74,28 @@ namespace cqorm
 
         private Field ParseMethodCall(MethodCallExpression call)
         {
+            // A function on a object
+            // Either from a Primitive or Aggregate 
+            var param = call.Object as ParameterExpression;
+            if (param != null)
+            {
+                // _query.From
+                // param.Type
+                Console.WriteLine("Param check");
+            }
+            if (_query.From is FromGroup group)
+            {
+                // Grouped by _query.GrouBy
+                // call.Type should be  AggregateSource<T, Q>. 
+                // All calls here access method / members on AggregateSource 
+                
+            }
+            // if (call.Object.Type.IsAssignableFrom(typeof(AggregateSource<T, Q>)))
+            // {
+
+            // }
+
+            // _query.From
             if (call.Type == typeof(string))
             {
                 // All string functions here

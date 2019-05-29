@@ -35,6 +35,8 @@ namespace cqorm
                 // Select default groupby item?
                 // _query.Fields = new List<Field> {...}
                 _query.GroupBy = new List<FieldName> { field as FieldName };
+                // Change the source of the query. Makes it avaialb eofr the ExpressionParser
+                _query.From = new FromGroup(_query.From);
                 return new AggregateSource<Q, T>(_query);
             }
             // todo: cater for multiples
@@ -100,8 +102,6 @@ namespace cqorm
             {
                 _query.Fields = list.Fields;
             }
-
-            
             return new DataSource<Q>(_query);
         }
     }

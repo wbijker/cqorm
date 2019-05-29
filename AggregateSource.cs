@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace cqorm
@@ -14,17 +15,25 @@ namespace cqorm
 
         public DataSource<P> Select<P>(Expression<Func<AggregateSource<T, Q>, P>> select)
         {
+            // Can only select grouped items and / or aggregate functions
+            // .Select(e => e.Count()) || e => e.Key
+            // .Select(e => new {
+            //     Key = e.Key,
+            //     Count = e.Count()
+            // })
+
+
+
             var parse = new ExpressionParser(_query);
             var field = parse.ParseField(select);
             if (field is FieldName)
             {
-                // Single
+                _query.Fields = new List<Field> { field };
             }
-            if (field is FieldList)
+            if (field is FieldList list)
             {
-                // Multiple
+                _query.Fields = list.Fields;
             }
-
             // .Select(e => new {
             //         StationId = e.Key,
             //         Items = e.Count()

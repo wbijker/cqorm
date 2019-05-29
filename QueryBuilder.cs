@@ -38,6 +38,16 @@ namespace cqorm
         public string Table { get; set; }
     }
 
+    public class FromGroup : From
+    {
+        public FromGroup(From from)
+        {
+            From = from;
+        }
+        
+        public From From { get; set; }
+    }
+
     public class FromSubQuery : From
     {
         public SelectQuery Query { get; set; }
