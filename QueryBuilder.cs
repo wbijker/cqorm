@@ -28,34 +28,6 @@ using System.Linq;
 
 namespace cqorm
 {
-    public class QueryBuilder
-    {
-        public T Populate<T>(Func<T> aa)
-        {
-            return aa.Invoke();
-        }
-
-        public string Generate(SelectQuery select)
-        {
-            Populate(() => new { Name = "Sir" });
-
-            // string sql = "SELECT ";
-            // sql += string.Join(", ", select.Fields.Select(f => $"{f.Alias}.{f.Name}"));
-            // sql += " FROM ";
-            // if (!String.IsNullOrEmpty(select.Source.TableSource))
-            // {
-            //     sql += $"{select.Source.TableSource} {select.Source.Alias}";
-            // }
-            // else
-            // {
-            //     sql += $"({Generate(select.Source.Source)}) {select.Source.Alias}";
-            // }
-            // return sql;
-            return "";
-        }
-    }
-
-        
     public abstract class From
     {
         public string Alias { get; set; }
@@ -73,23 +45,11 @@ namespace cqorm
 
     public class SelectQuery
     {
-        // SELECT
         public List<Field> Fields { get; set; }
-        // JOIN [SOURCE] on [ConditionalExpression...]
         public QueryJoin Join { get; set; } 
         public FieldMath Where { get; set; }
-
         public From From { get; set; }
-        // public SelectLimit Limit { get; set; }
-
-        // WHERE [ConditionalExpression...] 
-        // ORDER BY [FieldName...] ASC/DESC
-        // GROUP BY [FieldName...]
-        // HAVING [HavingExpression] 
-        // public QueryJoin Join { get; set; }
-        // // GROUP BY field1, field2, field3
-        // public QueryField[] GroupBy { get; set;}
-        // public WhereExpression Where { get; set; }
+        public List<FieldName> GroupBy { get; set; }
     }
 
     public class QueryJoin
@@ -97,11 +57,4 @@ namespace cqorm
         public SelectQuery Source { get; set; }
         public FieldMath On { get; set; }
     }
-
-    
-    // a + b == 10
-    // func(a)
-    // a.name == 'string'
-    // a or b
-    // a and b
 }

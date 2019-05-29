@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace cqorm
@@ -15,24 +16,7 @@ namespace cqorm
         
         private Field ParseLamda(LambdaExpression lambda)
         {
-            if (lambda.Body is BinaryExpression exp)
-            {
-                return ParseBinaryExpression(exp);
-            }
-            // .Select(s => new {...})
-            // New anonymous object
-            if (lambda.Body is NewExpression newx)
-            {
-                // newx.Constructor
-                _query.Fields = new List<Field>();
-                foreach (var arg in newx.Arguments)
-                {
-                    var field = ParseField(arg);
-                    _query.Fields.Add(field);
-                }
-                return null;
-            }
-            throw new NotImplementedException();
+            return ParseField(lambda.Body);
         }
 
         public Field ParseField(Expression exp)
@@ -41,6 +25,13 @@ namespace cqorm
             if (exp is LambdaExpression lambda)
             {
                 return ParseLamda(lambda);
+            }
+            // new { ... }
+            if (exp is NewExpression newx)
+            {
+                // newx.Constructor
+                var list = newx.Arguments.Select(a => ParseField(a)).ToArray();
+                return Field.List(list);
             }
             if (exp is ConstantExpression constant)
             {
