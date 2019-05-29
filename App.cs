@@ -41,6 +41,10 @@ namespace cqorm
                 {
                     Id = u.Id
                 })
+                .Select(a => new 
+                {
+                    IdPlus = a.Id + 10
+                })
                 .FetchSingle();
         }
 
