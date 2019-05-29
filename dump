@@ -8,7 +8,7 @@
                 .Select(e => new
                 {
                     StationId = e.Key,
-                    Scissors = e.Distinct().Count()
+                     Scissors = e.Distinct().Count()
                 });
 
             // var b = ScissorEntries

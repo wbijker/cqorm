@@ -36,16 +36,17 @@ namespace cqorm
             //     .FetchSingle();
 
             var b = new DataSource<User>()
-                .Where(u => u.Name.ToLower() == "willem" || u.Age > 10)
+                .Where(u => u.Name.ToLower() == "Jabo" || u.Age > 28)
                 .Select(u => new
                 {
-                    Id = u.Id
-                })
-                .Select(a => new 
-                {
-                    IdPlus = a.Id + 10
+                    Id = u.Id,
+                    Age = u.Age
                 })
                 .FetchSingle();
+
+            // new DataSource<ScissorsEntry>()
+            //     .GroupBy(e => e.StationId)
+            //     .FetchSingle();
         }
 
         public void Run()

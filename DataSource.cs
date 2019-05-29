@@ -11,55 +11,19 @@ namespace cqorm
     }
 
 
-    public class DataSource<T>
+    public class DataSource<T>: BaseSource<T>
     {
-        private SelectQuery _query;
-
-        public DataSource(SelectQuery query)
+        public DataSource(SelectQuery query) : base(query)
         {
-            _query = query;
         }
 
-        public DataSource()
+        public DataSource(): base()
         {
-            _query = new SelectQuery();
-            _query.From = new FromTable
-            {
-                Table = typeof(T).Name,
-                Alias = "u"
-            };
-
-            // query.Fields = new List<Field> 
-            // {
-            //     Field.Name("Username", query.From),
-            //     Field.Name("Password", query.From),
-            //     Field.Name("Email", query.From)
-            // };
-            
         }
 
         public AggregateSource<Q, T> GroupBy<Q>(Expression<Func<T, Q>> clause)
         {
-            // e => e.Field
-            if (clause is LambdaExpression lambda)
-            {
-                // e
-                if (clause.Parameters[0] is ParameterExpression p)
-                {
-                    // p.name == "E"
-                    // p.Type == typeof(T)
-                }
-                // e => e.Field
-                if (lambda.Body is MemberExpression member)
-                {
-                    // member.Member.Name == "Field"
-                    // member.Member
-                    // _querySource.Source
-                }
-                
-            }
-            // return this;
-            return new AggregateSource<Q, T>();
+            return new AggregateSource<Q, T>(_query);
         }
 
         public DataSource<T> Union(DataSource<T> source)
@@ -94,33 +58,11 @@ namespace cqorm
         }
 
         public int Delete(Expression<Func<T, bool>> clause)
-        {
+        {        
             return 1;
         }
 
-        public T FetchSingle()
-        {
-            // If not select was spesified select all from original source
-            if (_query.Fields == null)
-            {
-                var props = typeof(T).GetProperties();
-                _query.Fields = props
-                    .Select(p => (Field)new FieldName(p.Name, _query.From))
-                    .ToList();
-            }
-                
-                
-            ISQLDriver driver = new SQLLiteDriver();
-            Console.WriteLine("Fetch Single");
-            Console.WriteLine(driver.Generate(_query));
-            return default(T);
-        }
-
-        public T[] FetchArray()
-        {
-            // ToList()
-            return null;
-        }
+      
 
         public DataSource<T> Update<Q>(Expression<Func<T, Q>> update, Q newValue)
         {
@@ -139,39 +81,6 @@ namespace cqorm
             parse.ParseField(select);
             
             return new DataSource<Q>(_query);
-        }
-    }
-
-
-    public class AggregateSource<T, Q>
-    {
-        public T Key { get; set; }
-        // public Aggregate<Q> Aggregate { get; set; }
-
-        public DataSource<P> Select<P>(Expression<Func<AggregateSource<T, Q>, P>> select)
-        {
-            // ExpParser.ProcessExpression(select);
-            return new DataSource<P>();
-        }
-
-        public AggregateSource<T, Q> Distinct()
-        {
-            return this;
-        }
-
-        public int Count()
-        {
-            return 0;
-        }
-
-        public Q Max()
-        {
-            return default(Q);
-        }
-
-        public Q Min()
-        {
-            return default(Q);
         }
     }
 }

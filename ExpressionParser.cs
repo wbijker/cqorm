@@ -141,6 +141,23 @@ namespace cqorm
                 return FieldMathOperator.LessEqualThan;
             }
 
+            if (nodeType == ExpressionType.Multiply)
+            {
+                return FieldMathOperator.Multiply;
+            }
+            if (nodeType == ExpressionType.Divide)
+            {
+                return FieldMathOperator.Divide;
+            }
+            if (nodeType == ExpressionType.Add)
+            {
+                return FieldMathOperator.Plus;
+            }
+            if (nodeType == ExpressionType.Subtract)
+            {
+                return FieldMathOperator.Minus;
+            }
+
             throw new NotImplementedException();
         }
     }
