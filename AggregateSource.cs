@@ -13,17 +13,24 @@ namespace cqorm
         public T Key { get; set; }
         // public Aggregate<Q> Aggregate { get; set; }
 
-        public DataSource<P> Select<P>(Expression<Func<AggregateSource<T, Q>, P>> select)
-        {
-            // Can only select grouped items and / or aggregate functions
-            // .Select(e => e.Count()) || e => e.Key
+        // .Select(e => e.Count()) || e => e.Key
             // .Select(e => new {
             //     Key = e.Key,
             //     Count = e.Count()
             // })
 
+        public DataSource<P> Select<P>(Expression<Func<AggregateSource<T, Q>, P>> select)
+        {
+            // Can only select grouped items and / or aggregate functions
+            
+            var group = _query.From as FromGroup;
+            if (group == null)
+            {
+                throw new Exception("Source is not grouped");
+            }
 
-
+            // When you select group.Key you're refering to _query.GroupBy
+            
             var parse = new ExpressionParser(_query);
             var field = parse.ParseField(select);
             if (field is FieldName)
@@ -34,11 +41,7 @@ namespace cqorm
             {
                 _query.Fields = list.Fields;
             }
-            // .Select(e => new {
-            //         StationId = e.Key,
-            //         Items = e.Count()
-            //     })
-
+       
             // ExpParser.ProcessExpression(select);
             return new DataSource<P>(_query);
         }

@@ -49,6 +49,16 @@ namespace cqorm
                 {
                     // p.Name == "u"
                 }
+                // If Group by Field then .Key = grouped field
+                if (_query.From is FromGroup group)
+                {
+                    if (_query.GroupBy.Count() == 1)
+                    {
+                        return _query.GroupBy.First();
+                    }
+                    return new FieldList(_query.GroupBy);
+                }
+
                 // member.Member
                 return new FieldName(member.Member.Name, _query.From);
             }
@@ -82,10 +92,10 @@ namespace cqorm
                 // Grouped by _query.GrouBy
                 // call.Type should be  AggregateSource<T, Q>. 
                 // All calls here access method / members on AggregateSource 
-                var args = call.Arguments.Select(a => ParseField(a)).ToList();
-                
+                var args = call.Arguments.Select(a => ParseField(a)).ToList();                
                 if (call.Method.Name == "Count")
                 {
+                    // Count cannot have arguments?
                     return new FieldAggregate(AggregateFunction.Count, args);
                 }
                 throw new NotImplementedException();
