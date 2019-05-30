@@ -44,9 +44,13 @@ namespace cqorm
                 .GroupBy(e => e.StationId)
                 .Select(e => new {
                     StationId = e.Key,
-                    Items = e.Count()
+                    Stations = e.Count(),
+                    Scissors = e.Count(a => a.ScissorsId)
                 })
                 .FetchSingle();
+
+                // Select name, count(*), count(type) from Station
+                // group by name
         }
 
         public void Run()

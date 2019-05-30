@@ -51,6 +51,11 @@ namespace cqorm
             return this;
         }
 
+        public int Count(Expression<Func<Q, T>> counter)
+        {
+            return 0;
+        }
+        
         public int Count()
         {
             return 0;
