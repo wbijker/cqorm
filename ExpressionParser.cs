@@ -21,6 +21,12 @@ namespace cqorm
 
         public Field ParseField(Expression exp)
         {
+            // QuoteExpression
+            if (exp is UnaryExpression un)
+            {
+                // un.Method?
+                return ParseField(un.Operand);
+            }
             // u => u.Name == "Willy"
             if (exp is LambdaExpression lambda)
             {
@@ -95,6 +101,10 @@ namespace cqorm
                 var args = call.Arguments.Select(a => ParseField(a)).ToList();                
                 if (call.Method.Name == "Count")
                 {
+                    if (args.Count() == 0)
+                    {
+                        args = new List<Field> { Field.Special(FieldSpecialType.All) };
+                    }
                     // Count cannot have arguments?
                     return new FieldAggregate(AggregateFunction.Count, args);
                 }

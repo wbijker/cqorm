@@ -73,6 +73,12 @@ namespace cqorm
         {
             return new FieldList(fields);
         }
+
+        public static FieldSpecial Special(FieldSpecialType fieldType)
+        {
+            return new FieldSpecial(fieldType);
+        }
+
     }
 
     public enum ConstantType
@@ -83,7 +89,7 @@ namespace cqorm
         Binary,
     }
 
-    public class FieldList: Field
+    public class FieldList : Field
     {
         public List<Field> Fields { get; set; }
 
@@ -103,6 +109,24 @@ namespace cqorm
         }
         public ConstantType Type { get; set; }
         public object Value { get; set; }
+    }
+
+    public enum FieldSpecialType
+    {
+        All
+    }
+
+    // Represents a * as in count(*)
+    public class FieldSpecial : Field
+    {
+        public FieldSpecial(FieldSpecialType fieldType)
+        {
+            this.FieldType = fieldType;
+
+        }
+        public FieldSpecialType FieldType { get; set; }
+
+
     }
 
     // a.Name
