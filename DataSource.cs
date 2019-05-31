@@ -14,6 +14,8 @@ namespace cqorm
 
     public class DataSource<T>: BaseSource<T>
     {
+        public SelectQuery Query => _query;
+
         public DataSource(SelectQuery query) : base(query)
         {
         }
@@ -55,7 +57,23 @@ namespace cqorm
 
         public DataSource<Join<T, Q>> InnerJoin<Q>(DataSource<Q> source, Expression<Func<T, Q, bool>> on)
         {
-            return new DataSource<Join<T, Q>>();
+            var parse = new ExpressionParser(_query);
+            var fieldOn = parse.ParseField(on);
+            if (fieldOn is FieldMath math)
+            {
+                var select = new SelectQuery
+                {
+                    Join = new QueryJoin
+                    {
+                        Left = new FromSubQuery(_query),
+                        Right = new FromSubQuery(source.Query)
+                    }
+                };
+
+                return new DataSource<Join<T, Q>>(select);
+            }
+
+            throw new NotImplementedException();
         }
 
         public DataSource<T> Where(Expression<Func<T, bool>> clause)

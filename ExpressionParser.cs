@@ -104,7 +104,8 @@ namespace cqorm
                     // Count(distinct ...)
                     return new FieldAggregate(AggregateFunction.Count, new List<Field> {
                         new FieldRowFunction(FieldRowFunctionType.Distinct, args.ToArray())
-                    });
+                    }
+);
                 }
                 if (call.Method.Name == "Count")
                 {

@@ -35,7 +35,6 @@ namespace cqorm
                 
                 
             ISQLDriver driver = new SQLLiteDriver();
-            Console.WriteLine("Fetch Single");
             Console.WriteLine(driver.Generate(_query));
             return default(T);
         }

@@ -51,14 +51,26 @@ namespace cqorm
             // on s.Id = b.StationId
             // where s.Active = true
     
-            new DataSource<ScissorsEntry>()
+            var a = new DataSource<ScissorsEntry>()
                 .GroupBy(s => s.StationId)
                 .Select(g => new {
                     StationId = g.Key,
                     Scissors = g.CountDistinct(f => f.StationId)
+                });
+
+            var b = new DataSource<ScissorsEntry>()
+                .GroupBy(s => s.StationId)
+                .Select(e => new {
+                    StationId = e.Key,
+                    Entries = e.Count()
+                });
+
+            a.InnerJoin(b, (l,r) => l.StationId == r.StationId)
+                .Select(l => new {
+                    Scissors = l.Left.Scissors,
+                    Entries = l.Right.Entries
                 })
                 .FetchSingle();
-            
         }
 
         public void Run()
