@@ -105,7 +105,7 @@ namespace cqorm
             if (f is FieldRowFunction row) 
             {
                 var args = GenerateFields(row.Arguments);
-                return $"{GenerateRowFunction(row.Function)}({args})";
+                return $"{GenerateRowFunction(row.Function)} {args}";
             }
             if (f is FieldFunction func)
             {

@@ -40,6 +40,12 @@ namespace cqorm
             return default(T);
         }
 
+        // Distinct on all columns
+        public BaseSource<T> Distinct()
+        {
+            return this;
+        }
+
         public T[] FetchArray()
         {
             // ToList()

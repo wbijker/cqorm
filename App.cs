@@ -31,23 +31,34 @@ namespace cqorm
         }
         public void Simple()
         {            
-            new DataSource<User>()
-                .Where(u => u.Name.ToLower() == "Jabo" || u.Age > 28)
-                .Select(u => new
-                {
-                    Id = u.Id,
-                    Age = u.Age
-                })
-                .FetchSingle();
 
+            // select 
+            //     s.Id, s.UID,  a.Scissors, b.Entries 
+            // from 
+            // (
+            //     select StationId, count (distinct ScissorsId) as Scissors from ScissorsEntries
+            //     group by StationId
+            //     ) as a
+            
+            // inner join 
+            // (
+            //     select StationId, count(*) as Entries from ScissorsEntries
+            //     group by StationId
+            // ) as b
+            
+            // on a.StationId = b.StationId
+            // inner join Stations s 
+            // on s.Id = b.StationId
+            // where s.Active = true
+    
             new DataSource<ScissorsEntry>()
-                .GroupBy(e => e.StationId)
-                .Select(e => new {
-                    StationId = e.Key,
-                    Stations = e.Count(),
-                    Scissors = e.Count(a => a.ScissorsId)
+                .GroupBy(s => s.StationId)
+                .Select(g => new {
+                    StationId = g.Key,
+                    Scissors = g.CountDistinct(f => f.StationId)
                 })
                 .FetchSingle();
+            
         }
 
         public void Run()

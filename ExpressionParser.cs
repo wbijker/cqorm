@@ -99,6 +99,13 @@ namespace cqorm
                 // call.Type should be  AggregateSource<T, Q>. 
                 // All calls here access method / members on AggregateSource 
                 var args = call.Arguments.Select(a => ParseField(a)).ToList();                
+                if (call.Method.Name == "CountDistinct")
+                {
+                    // Count(distinct ...)
+                    return new FieldAggregate(AggregateFunction.Count, new List<Field> {
+                        new FieldRowFunction(FieldRowFunctionType.Distinct, args.ToArray())
+                    });
+                }
                 if (call.Method.Name == "Count")
                 {
                     if (args.Count() == 0)

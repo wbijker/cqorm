@@ -46,16 +46,16 @@ namespace cqorm
             return new DataSource<P>(_query);
         }
 
-        public AggregateSource<T, Q> Distinct()
+        public int CountDistinct(Expression<Func<Q, T>> field)
         {
-            return this;
+            return 0;
         }
 
         public int Count(Expression<Func<Q, T>> field)
         {
             return 0;
         }
-        
+
         public int Count()
         {
             return 0;
