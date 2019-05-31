@@ -15,11 +15,7 @@ namespace cqorm
         public BaseSource()
         {
             _query = new SelectQuery();
-            _query.From = new FromTable
-            {
-                Table = typeof(T).Name,
-                Alias = "u"
-            };
+            _query.From = new FromTable(typeof(T), "u", typeof(T).Name);
         }
 
         public T FetchSingle()

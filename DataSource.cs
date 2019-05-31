@@ -38,7 +38,7 @@ namespace cqorm
                 // _query.Fields = new List<Field> {...}
                 _query.GroupBy = new List<FieldName> { field as FieldName };
                 // Change the source of the query. Makes it avaialb eofr the ExpressionParser
-                _query.From = new FromGroup(_query.From);
+                _query.From = new FromGroup(typeof(Q), "g", _query.From);
                 return new AggregateSource<Q, T>(_query);
             }
             // todo: cater for multiples
@@ -57,19 +57,19 @@ namespace cqorm
 
         public DataSource<Join<T, Q>> InnerJoin<Q>(DataSource<Q> source, Expression<Func<T, Q, bool>> on)
         {
-            var parse = new ExpressionParser(_query);
+            var select = new SelectQuery
+            {
+                Join = new QueryJoin
+                {
+                    Left = new FromSubQuery(typeof(T), "a", _query),
+                    Right = new FromSubQuery(typeof(Q), "b", source.Query)
+                }
+            };
+            
+            var parse = new ExpressionParser(select);
             var fieldOn = parse.ParseField(on);
             if (fieldOn is FieldMath math)
             {
-                var select = new SelectQuery
-                {
-                    Join = new QueryJoin
-                    {
-                        Left = new FromSubQuery(_query),
-                        Right = new FromSubQuery(source.Query)
-                    }
-                };
-
                 return new DataSource<Join<T, Q>>(select);
             }
 

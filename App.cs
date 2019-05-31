@@ -9,11 +9,7 @@ namespace cqorm
         {
 
             var query = new SelectQuery();
-            query.From = new FromTable
-            {
-                Table = "User",
-                Alias = "u"
-            };
+            query.From = new FromTable(typeof(ScissorsEntry), "s", "ScissorsEntry");
             query.Fields = new List<Field> 
             {
                 Field.Name("Username", query.From),

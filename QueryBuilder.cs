@@ -30,31 +30,42 @@ namespace cqorm
 {
     public abstract class From
     {
+        public Type Type { get; set; }
         public string Alias { get; set; }
+
+        public From(Type type, string alias)
+        {
+            Type = type;
+            Alias = alias;
+        }
     }
 
     public class FromTable : From
     {
+        public FromTable(Type type, string alias, string table) : base(type, alias)
+        {
+            Table = table;
+        }
+
         public string Table { get; set; }
     }
 
     public class FromGroup : From
     {
-        public FromGroup(From from)
+        public FromGroup(Type type, string alias, From from) : base(type, alias)
         {
             From = from;
         }
-        
+
         public From From { get; set; }
     }
 
     public class FromSubQuery : From
     {
-        public FromSubQuery(SelectQuery select)
+        public FromSubQuery(Type type, string alias, SelectQuery query) : base(type, alias)
         {
-            Query = select;
+            Query = query;
         }
-
         public SelectQuery Query { get; set; }
     }
 

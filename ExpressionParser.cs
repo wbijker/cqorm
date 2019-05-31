@@ -65,14 +65,35 @@ namespace cqorm
                     return new FieldList(_query.GroupBy);
                 }
 
+            
                 // member.Member
-                return new FieldName(member.Member.Name, _query.From);
+                return new FieldName(member.Member.Name, GetSourceFromType(member.Type));
             }
             if (exp is BinaryExpression bin)
             {
                 return ParseBinaryExpression(bin);
             }
             throw new NotImplementedException();            
+        }
+
+        private From GetSourceFromType(Type type)
+        {
+            if (type == _query.From.Type)
+            {
+                return _query.From;
+            }
+            if (_query.Join != null)
+            {
+                if (type == _query.Join.Left.Type) 
+                {
+                    return _query.Join.Left;
+                }
+                if (type == _query.Join.Right.Type)
+                {
+                    return _query.Join.Right;
+                }
+            }
+            throw new Exception("Could not determine type");
         }
 
         private Field ParseConstant(ConstantExpression constant)
