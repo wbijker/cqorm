@@ -31,14 +31,14 @@ namespace cqorm
         }
         public void Simple()
         {            
-            // new DataSource<User>()
-            //     .Where(u => u.Name.ToLower() == "Jabo" || u.Age > 28)
-            //     .Select(u => new
-            //     {
-            //         Id = u.Id,
-            //         Age = u.Age
-            //     })
-            //     .FetchSingle();
+            new DataSource<User>()
+                .Where(u => u.Name.ToLower() == "Jabo" || u.Age > 28)
+                .Select(u => new
+                {
+                    Id = u.Id,
+                    Age = u.Age
+                })
+                .FetchSingle();
 
             new DataSource<ScissorsEntry>()
                 .GroupBy(e => e.StationId)
@@ -48,9 +48,6 @@ namespace cqorm
                     Scissors = e.Count(a => a.ScissorsId)
                 })
                 .FetchSingle();
-
-                // Select name, count(*), count(type) from Station
-                // group by name
         }
 
         public void Run()

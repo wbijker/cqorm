@@ -72,6 +72,15 @@ namespace cqorm
 
         private string GenerateField(Field f)
         {
+            if (f is FieldSpecial special)
+            {
+                switch (special.FieldType)
+                {
+                    case FieldSpecialType.All:
+                        return "*";
+                }
+                throw new NotImplementedException();
+            }
             if (f is Constant c)
             {
                 switch (c.Type)
