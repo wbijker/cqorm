@@ -69,10 +69,21 @@ namespace cqorm
         public SelectQuery Query { get; set; }
     }
 
+    public class FromJoin : From
+    {
+        public FromJoin(Type type, string alias) : base(type, alias)
+        {
+        }
+
+        public From Left { get; set; }
+        public From Right { get; set; }
+        public FieldMath On { get; set; }
+    }
+
     public class SelectQuery
     {
         public List<Field> Fields { get; set; }
-        public QueryJoin Join { get; set; } 
+        // public QueryJoin Join { get; set; } 
         public FieldMath Where { get; set; }
         public From From { get; set; }
         public List<FieldName> GroupBy { get; set; }

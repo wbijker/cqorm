@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 namespace cqorm
 {
     // Query source from Table or (sub)query
-    public class QuerySource<T>: BaseSource
+    public class QuerySource<T> : BaseSource
     {
         public SelectQuery Query => _query;
 
@@ -15,7 +15,7 @@ namespace cqorm
             _query = query;
         }
 
-        public QuerySource(): base()
+        public QuerySource() : base()
         {
             _query = new SelectQuery
             {
@@ -56,19 +56,22 @@ namespace cqorm
 
         public JoinSource<T, Q> InnerJoin<Q>(QuerySource<Q> other, Expression<Func<T, Q, bool>> on)
         {
-            _query.Join = new QueryJoin
-            {
-                Source = new FromSubQuery(typeof(Q), "b", other.Query),
-                On = null
-            };
-            
+
             var parse = new ExpressionParser(_query);
             var fieldOn = parse.ParseField(on);
-            
+
             if (fieldOn is FieldMath math)
             {
-                _query.Join.On = math;
-                return new JoinSource<T, Q>(_query);
+                var select = new SelectQuery
+                {
+                    From = new FromJoin(null, "j")
+                    {
+                        Left = new FromSubQuery(typeof(T), "a", _query),
+                        Right = new FromSubQuery(typeof(Q), "b", other.Query),
+                        On = math
+                    }
+                };
+                return new JoinSource<T, Q>(select);
                 // return new DataSource<Join<T, Q>>(select);
             }
 
@@ -84,7 +87,7 @@ namespace cqorm
                 _query.Where = math;
                 return this;
             }
-            throw new Exception("Where should be a binary expression")  ;
+            throw new Exception("Where should be a binary expression");
             // query.Where = new FieldMath(
             //     Field.Function("lower", Field.Name("Username", query.From)), 
             //     FieldMathOperator.Equal,
@@ -92,7 +95,7 @@ namespace cqorm
         }
 
         public int Delete(Expression<Func<T, bool>> clause)
-        {        
+        {
             return 1;
         }
 
@@ -122,7 +125,7 @@ namespace cqorm
             return new QuerySource<Q>(_query);
         }
 
-          public T FetchSingle()
+        public T FetchSingle()
         {
             // If not select was spesified select all from original source
             if (_query.Fields == null)
@@ -132,7 +135,7 @@ namespace cqorm
                     .Select(p => (Field)new FieldName(p.Name, _query.From))
                     .ToList();
             }
-                
+
             ISQLDriver driver = new SQLLiteDriver();
             Console.WriteLine(driver.Generate(_query));
             return default(T);
