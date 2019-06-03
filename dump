@@ -1,6 +1,24 @@
-QuerySource (from table or query)
-JoinSource (from joining two QuerySources)
-AggregateSource (grouped QuerySource)
+Select ...
+FROM A
+JOIN b on ..
+JOIN c on ..
+
+nwe FromJoin(
+    Left = new FromTable("A"),
+    Right = new FromJoin
+    {
+        Left = FromTable("B")",
+        Right = FromTable("C")
+    }
+);
+
+
+Only three sources:
+Tables (from table)
+QuerySource (from query/subquery)
+JoinSource ( joining two Source)
+
+//AggregateSource (grouped Sources)
 
 
         

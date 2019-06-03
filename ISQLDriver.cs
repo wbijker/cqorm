@@ -17,6 +17,28 @@ namespace cqorm
             return String.Join(", ", list.Select(f => GenerateField(f)));
         }
 
+        private string GenerateFrom(From from)
+        {
+            if (from is FromTable table) 
+            {
+                return $"{table.Table} {table.Alias}";
+            }
+            if (from is FromJoin join)
+            {
+                var left = GenerateFrom(join.Left);
+                var right = GenerateFrom(join.Right);
+                var on = GenerateField(join.On);
+                return $@"{left} 
+                    INNER JOIN {right} 
+                    ON {on}";
+            }
+            if (from is FromSubQuery query) 
+            {
+                return $"({Generate(query.Query)}) {query.Alias}";
+            }
+            return "";
+        }
+
         public string Generate(SelectQuery query)
         {
             string sql = "SELECT ";
@@ -25,10 +47,7 @@ namespace cqorm
                 throw new Exception("No fields to select");
             }
             sql += GenerateFields(query.Fields);
-            sql += " FROM ";
-            if (query.From is FromTable table) {
-                sql += $"{table.Table} {table.Alias}";
-            }
+            sql += $" FROM {GenerateFrom(query.From)}";
             if (query.Where != null)
             {
                 sql += " WHERE " + GenerateField(query.Where);
