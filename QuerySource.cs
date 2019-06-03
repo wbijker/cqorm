@@ -12,11 +12,15 @@ namespace cqorm
 
         public QuerySource(SelectQuery query) : base(query)
         {
-            _query.From = new FromTable(typeof(T), "u", typeof(T).Name);
+            _query = query;
         }
 
         public QuerySource(): base()
         {
+            _query = new SelectQuery
+            {
+                From = new FromTable(typeof(T), "u", typeof(T).Name)
+            };
         }
 
         public AggregateSource<Q, T> GroupBy<Q>(Expression<Func<T, Q>> clause)

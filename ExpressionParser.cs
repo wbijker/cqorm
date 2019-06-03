@@ -13,7 +13,7 @@ namespace cqorm
         {
             _query = query;
         }
-        
+
         private Field ParseLamda(LambdaExpression lambda)
         {
             return ParseField(lambda.Body);
@@ -53,27 +53,24 @@ namespace cqorm
                 // member.Member.Name == "name"
                 if (member.Expression is ParameterExpression p)
                 {
-                    // p.Name == "u"
-                }
-                // If Group by Field then .Key = grouped field
-                if (_query.From is FromGroup group)
-                {
-                    if (_query.GroupBy.Count() == 1)
+                    // If Group by Field then .Key = grouped field
+                    if (_query.From is FromGroup group)
                     {
-                        return _query.GroupBy.First();
+                        if (_query.GroupBy.Count() == 1)
+                        {
+                            return _query.GroupBy.First();
+                        }
+                        return new FieldList(_query.GroupBy);
                     }
-                    return new FieldList(_query.GroupBy);
+                    // member.Member
+                    return new FieldName(member.Member.Name, GetSourceFromType(p.Type));
                 }
-
-            
-                // member.Member
-                return new FieldName(member.Member.Name, GetSourceFromType(member.Type));
             }
             if (exp is BinaryExpression bin)
             {
                 return ParseBinaryExpression(bin);
             }
-            throw new NotImplementedException();            
+            throw new NotImplementedException();
         }
 
         private From GetSourceFromType(Type type)
@@ -84,9 +81,9 @@ namespace cqorm
             }
             if (_query.Join != null)
             {
-                if (type == _query.Join.Left.Type) 
+                if (type == _query.Join.Left.Type)
                 {
-                return _query.Join.Left;
+                    return _query.Join.Left;
                 }
                 if (type == _query.Join.Right.Type)
                 {
@@ -102,7 +99,7 @@ namespace cqorm
             {
                 return new Constant(ConstantType.String, constant.Value);
             }
-            if (constant.Type == typeof(int)) 
+            if (constant.Type == typeof(int))
             {
                 return new Constant(ConstantType.Int, (int)constant.Value);
             }
@@ -119,7 +116,7 @@ namespace cqorm
                 // Grouped by _query.GrouBy
                 // call.Type should be  AggregateSource<T, Q>. 
                 // All calls here access method / members on AggregateSource 
-                var args = call.Arguments.Select(a => ParseField(a)).ToList();                
+                var args = call.Arguments.Select(a => ParseField(a)).ToList();
                 if (call.Method.Name == "CountDistinct")
                 {
                     // Count(distinct ...)
@@ -139,7 +136,7 @@ namespace cqorm
                 }
                 throw new NotImplementedException();
             }
-            
+
             // _query.From
             if (call.Type == typeof(string))
             {
