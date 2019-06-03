@@ -4,7 +4,8 @@ using System.Linq.Expressions;
 
 namespace cqorm
 {
-    public class AggregateSource<T, Q> : BaseSource<Q>
+
+    public class AggregateSource<T, Q> : BaseSource
     {
         public AggregateSource(SelectQuery query) : base(query)
         {

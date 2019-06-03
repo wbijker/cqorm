@@ -12,12 +12,13 @@ namespace cqorm
     }
 
 
-    public class DataSource<T>: BaseSource<T>
+    public class DataSource<T>: BaseSource
     {
         public SelectQuery Query => _query;
 
         public DataSource(SelectQuery query) : base(query)
         {
+            _query.From = new FromTable(typeof(T), "u", typeof(T).Name);
         }
 
         public DataSource(): base()
@@ -55,14 +56,14 @@ namespace cqorm
             return this;
         }
 
-        public DataSource<Join<T, Q>> InnerJoin<Q>(DataSource<Q> source, Expression<Func<T, Q, bool>> on)
+        public JoinSource<T, Q> InnerJoin<Q>(DataSource<Q> other, Expression<Func<T, Q, bool>> on)
         {
             var select = new SelectQuery
             {
                 Join = new QueryJoin
                 {
                     Left = new FromSubQuery(typeof(T), "a", _query),
-                    Right = new FromSubQuery(typeof(Q), "b", source.Query)
+                    Right = new FromSubQuery(typeof(Q), "b", other.Query)
                 }
             };
             
@@ -70,7 +71,8 @@ namespace cqorm
             var fieldOn = parse.ParseField(on);
             if (fieldOn is FieldMath math)
             {
-                return new DataSource<Join<T, Q>>(select);
+                return new JoinSource<T, Q>(select);
+                // return new DataSource<Join<T, Q>>(select);
             }
 
             throw new NotImplementedException();
@@ -121,6 +123,35 @@ namespace cqorm
                 _query.Fields = list.Fields;
             }
             return new DataSource<Q>(_query);
+        }
+
+          public T FetchSingle()
+        {
+            // If not select was spesified select all from original source
+            if (_query.Fields == null)
+            {
+                var props = typeof(T).GetProperties();
+                _query.Fields = props
+                    .Select(p => (Field)new FieldName(p.Name, _query.From))
+                    .ToList();
+            }
+                
+                
+            ISQLDriver driver = new SQLLiteDriver();
+            Console.WriteLine(driver.Generate(_query));
+            return default(T);
+        }
+
+        // Distinct on all columns
+        public BaseSource Distinct()
+        {
+            return this;
+        }
+
+        public T[] FetchArray()
+        {
+            // ToList()
+            return null;
         }
     }
 }

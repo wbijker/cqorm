@@ -3,7 +3,13 @@ using System.Linq;
 
 namespace cqorm
 {
-    public abstract class BaseSource<T>
+    public interface ISource<T>
+    {
+        T FetchSingle();
+        T[] FetchMultiple();
+    }
+
+    public abstract class BaseSource
     {
         protected SelectQuery _query;
 
@@ -15,36 +21,6 @@ namespace cqorm
         public BaseSource()
         {
             _query = new SelectQuery();
-            _query.From = new FromTable(typeof(T), "u", typeof(T).Name);
-        }
-
-        public T FetchSingle()
-        {
-            // If not select was spesified select all from original source
-            if (_query.Fields == null)
-            {
-                var props = typeof(T).GetProperties();
-                _query.Fields = props
-                    .Select(p => (Field)new FieldName(p.Name, _query.From))
-                    .ToList();
-            }
-                
-                
-            ISQLDriver driver = new SQLLiteDriver();
-            Console.WriteLine(driver.Generate(_query));
-            return default(T);
-        }
-
-        // Distinct on all columns
-        public BaseSource<T> Distinct()
-        {
-            return this;
-        }
-
-        public T[] FetchArray()
-        {
-            // ToList()
-            return null;
         }
     }
 }
