@@ -86,7 +86,7 @@ namespace cqorm
             {
                 if (type == _query.Join.Left.Type) 
                 {
-                    return _query.Join.Left;
+                return _query.Join.Left;
                 }
                 if (type == _query.Join.Right.Type)
                 {
