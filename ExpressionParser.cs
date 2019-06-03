@@ -81,13 +81,9 @@ namespace cqorm
             }
             if (_query.Join != null)
             {
-                if (type == _query.Join.Left.Type)
+                if (type == _query.Join.Source.Type)
                 {
-                    return _query.Join.Left;
-                }
-                if (type == _query.Join.Right.Type)
-                {
-                    return _query.Join.Right;
+                    return _query.Join.Source;
                 }
             }
             throw new Exception("Could not determine type");

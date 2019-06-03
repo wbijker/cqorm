@@ -56,20 +56,19 @@ namespace cqorm
 
         public JoinSource<T, Q> InnerJoin<Q>(QuerySource<Q> other, Expression<Func<T, Q, bool>> on)
         {
-            var select = new SelectQuery
+            _query.Join = new QueryJoin
             {
-                Join = new QueryJoin
-                {
-                    Left = new FromSubQuery(typeof(T), "a", _query),
-                    Right = new FromSubQuery(typeof(Q), "b", other.Query)
-                }
+                Source = new FromSubQuery(typeof(Q), "b", other.Query),
+                On = null
             };
             
-            var parse = new ExpressionParser(select);
+            var parse = new ExpressionParser(_query);
             var fieldOn = parse.ParseField(on);
+            
             if (fieldOn is FieldMath math)
             {
-                return new JoinSource<T, Q>(select);
+                _query.Join.On = math;
+                return new JoinSource<T, Q>(_query);
                 // return new DataSource<Join<T, Q>>(select);
             }
 
@@ -133,7 +132,6 @@ namespace cqorm
                     .Select(p => (Field)new FieldName(p.Name, _query.From))
                     .ToList();
             }
-                
                 
             ISQLDriver driver = new SQLLiteDriver();
             Console.WriteLine(driver.Generate(_query));

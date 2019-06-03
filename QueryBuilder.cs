@@ -80,8 +80,8 @@ namespace cqorm
 
     public class QueryJoin
     {
-        public From Left { get; set; }
-        public From Right { get; set; }
+        // TypeOfJoin
+        public From Source { get; set; }
         public FieldMath On { get; set; }
     }
 }

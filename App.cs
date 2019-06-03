@@ -42,14 +42,12 @@ namespace cqorm
                     Entries = e.Count()
                 });
 
-            var join = a.InnerJoin(b, (scissors, entries) => scissors.StationId == entries.StationId);
-
-            // a.InnerJoin(b, (l,r) => l.StationId == r.StationId)
-            //     .Select(l => new {
-            //         Scissors = l.Left.Scissors,
-            //         Entries = l.Right.Entries
-            //     })
-            //     .FetchSingle();
+            var join = a.InnerJoin(b, (scissors, entries) => scissors.StationId == entries.StationId)
+                .Select((scissor, entires) => new {
+                    Scissors = scissor.Scissors,
+                    Entires = entires.Entries
+                })
+                .FetchSingle();
         }
 
         public void Run()
