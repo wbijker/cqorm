@@ -1,27 +1,21 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace cqorm
 {
-    public class Join<T, Q>
-    {
-        public T Left { get; set; }
-        public Q Right { get; set; }
-    }
-
-
-    public class DataSource<T>: BaseSource
+    // Query source from Table or (sub)query
+    public class QuerySource<T>: BaseSource
     {
         public SelectQuery Query => _query;
 
-        public DataSource(SelectQuery query) : base(query)
+        public QuerySource(SelectQuery query) : base(query)
         {
             _query.From = new FromTable(typeof(T), "u", typeof(T).Name);
         }
 
-        public DataSource(): base()
+        public QuerySource(): base()
         {
         }
 
@@ -46,17 +40,17 @@ namespace cqorm
             throw new Exception("Invalid GroupBy Expression. It can only be a field name or a group object");
         }
 
-        public DataSource<T> Union(DataSource<T> source)
+        public QuerySource<T> Union(QuerySource<T> source)
         {
             return this;
         }
 
-        public DataSource<T> UnionAll(DataSource<T> source)
+        public QuerySource<T> UnionAll(QuerySource<T> source)
         {
             return this;
         }
 
-        public JoinSource<T, Q> InnerJoin<Q>(DataSource<Q> other, Expression<Func<T, Q, bool>> on)
+        public JoinSource<T, Q> InnerJoin<Q>(QuerySource<Q> other, Expression<Func<T, Q, bool>> on)
         {
             var select = new SelectQuery
             {
@@ -78,7 +72,7 @@ namespace cqorm
             throw new NotImplementedException();
         }
 
-        public DataSource<T> Where(Expression<Func<T, bool>> clause)
+        public QuerySource<T> Where(Expression<Func<T, bool>> clause)
         {
             var parse = new ExpressionParser(_query);
             var ff = parse.ParseField(clause);
@@ -99,18 +93,18 @@ namespace cqorm
             return 1;
         }
 
-        public DataSource<T> Update<Q>(Expression<Func<T, Q>> update, Q newValue)
+        public QuerySource<T> Update<Q>(Expression<Func<T, Q>> update, Q newValue)
         {
             return this;
         }
 
-        public DataSource<T> Update<Q>(Expression<Func<T, Q>> update, Expression<Func<T, Q>> newValue)
+        public QuerySource<T> Update<Q>(Expression<Func<T, Q>> update, Expression<Func<T, Q>> newValue)
         {
             return this;
         }
 
         // The momemtn you select something the source changes
-        public DataSource<Q> Select<Q>(Expression<Func<T, Q>> select)
+        public QuerySource<Q> Select<Q>(Expression<Func<T, Q>> select)
         {
             var parse = new ExpressionParser(_query);
             var field = parse.ParseField(select);
@@ -122,7 +116,7 @@ namespace cqorm
             {
                 _query.Fields = list.Fields;
             }
-            return new DataSource<Q>(_query);
+            return new QuerySource<Q>(_query);
         }
 
           public T FetchSingle()

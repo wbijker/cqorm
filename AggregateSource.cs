@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace cqorm
 {
-
+    // Grouped QueyrSource
     public class AggregateSource<T, Q> : BaseSource
     {
         public AggregateSource(SelectQuery query) : base(query)
@@ -20,7 +20,7 @@ namespace cqorm
             //     Count = e.Count()
             // })
 
-        public DataSource<P> Select<P>(Expression<Func<AggregateSource<T, Q>, P>> select)
+        public QuerySource<P> Select<P>(Expression<Func<AggregateSource<T, Q>, P>> select)
         {
             // Can only select grouped items and / or aggregate functions
             
@@ -44,7 +44,7 @@ namespace cqorm
             }
        
             // ExpParser.ProcessExpression(select);
-            return new DataSource<P>(_query);
+            return new QuerySource<P>(_query);
         }
 
         public int CountDistinct(Expression<Func<Q, T>> field)

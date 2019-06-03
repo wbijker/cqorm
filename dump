@@ -1,4 +1,10 @@
-  private void ScissorTest()
+QuerySource (from table or query)
+JoinSource (from joining two QuerySources)
+AggregateSource (grouped QuerySource)
+
+
+        
+        private void ScissorTest()
         {
             var ScissorEntries = new DataSource<ScissorEnty>("ScissorEntry");
             var Stations = new DataSource<Station>("Station");

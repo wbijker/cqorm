@@ -28,14 +28,14 @@ namespace cqorm
             // on s.Id = b.StationId
             // where s.Active = true
     
-            var a = new DataSource<ScissorsEntry>()
+            var a = new QuerySource<ScissorsEntry>()
                 .GroupBy(s => s.StationId)
                 .Select(g => new {
                     StationId = g.Key,
                     Scissors = g.CountDistinct(f => f.StationId)
                 });
 
-            var b = new DataSource<ScissorsEntry>()
+            var b = new QuerySource<ScissorsEntry>()
                 .GroupBy(s => s.StationId)
                 .Select(e => new {
                     StationId = e.Key,
