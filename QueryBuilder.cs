@@ -71,8 +71,11 @@ namespace cqorm
 
     public class FromJoin : From
     {
-        public FromJoin(Type type, string alias) : base(type, alias)
+        public FromJoin(Type type, string alias, From left, From right, FieldMath on) : base(type, alias)
         {
+            Left = left;
+            Right = right;
+            On = on;
         }
 
         public From Left { get; set; }

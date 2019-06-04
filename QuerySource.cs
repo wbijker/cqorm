@@ -56,21 +56,24 @@ namespace cqorm
 
         public JoinSource<T, Q> InnerJoin<Q>(QuerySource<Q> other, Expression<Func<T, Q, bool>> on)
         {
+            var left = new FromSubQuery(typeof(T), "a", _query);
+            var right = new FromSubQuery(typeof(Q), "b", other.Query);
 
-            var parse = new ExpressionParser(_query);
+            // Need to set _query.from to be able to parse on
+            var select = new SelectQuery
+            {
+                From = new FromJoin(null, "j", left, right, null)
+            };
+            // _query.From = new FromJoin(null, "j", left, right, null);
+            var parse = new ExpressionParser(select);
             var fieldOn = parse.ParseField(on);
 
             if (fieldOn is FieldMath math)
             {
-                var select = new SelectQuery
-                {
-                    From = new FromJoin(null, "j")
-                    {
-                        Left = new FromSubQuery(typeof(T), "a", _query),
-                        Right = new FromSubQuery(typeof(Q), "b", other.Query),
-                        On = math
-                    }
-                };
+                (math.Left as FieldName).Source = left;
+                (math.Right as FieldName).Source = right;
+                (select.From as FromJoin).On = math;
+
                 return new JoinSource<T, Q>(select);
                 // return new DataSource<Join<T, Q>>(select);
             }
