@@ -28,6 +28,8 @@ namespace cqorm
 {
     public abstract class Field
     {
+        public string Alias { get; set; }
+        
         // either constant, name, aggregate, distinct, fieldfunction, fieldExpression
         public static Constant ConstantString(string value)
         {

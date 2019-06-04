@@ -36,6 +36,10 @@ namespace cqorm
             {
                 return $"({Generate(query.Query)}) {query.Alias}";
             }
+            if (from is FromGroup group)
+            {
+                return GenerateFrom(group.From);
+            }
             return "";
         }
 
@@ -119,7 +123,7 @@ namespace cqorm
             if (f is FieldAggregate aggregate)
             {
                 var args = GenerateFields(aggregate.Arguments);
-                return $"{GenerateFunction(aggregate.Function)}({args})";
+                return $"{GenerateFunction(aggregate.Function)}({args}) AS {aggregate.Alias}";
             }
             if (f is FieldRowFunction row) 
             {

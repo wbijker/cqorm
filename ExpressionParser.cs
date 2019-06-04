@@ -19,6 +19,13 @@ namespace cqorm
             return ParseField(lambda.Body);
         }
 
+        public Field ParseFieldAlias(Expression exp, string alias)
+        {
+            var field = ParseField(exp);
+            field.Alias = alias;
+            return field;
+        }
+
         public Field ParseField(Expression exp)
         {
             // QuoteExpression
@@ -35,8 +42,7 @@ namespace cqorm
             // new { ... }
             if (exp is NewExpression newx)
             {
-                // newx.Constructor
-                var list = newx.Arguments.Select(a => ParseField(a)).ToArray();
+                var list = newx.Arguments.Select((a,i) => ParseFieldAlias(a, newx.Members[i].Name)).ToArray();
                 return Field.List(list);
             }
             if (exp is ConstantExpression constant)
