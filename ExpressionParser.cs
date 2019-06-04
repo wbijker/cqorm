@@ -28,6 +28,7 @@ namespace cqorm
 
         public Field ParseField(Expression exp)
         {
+            // .Select(s => s)
             // QuoteExpression
             if (exp is UnaryExpression un)
             {

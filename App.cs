@@ -34,8 +34,18 @@ namespace cqorm
             Console.WriteLine(driver.Generate(query));
         }
 
+    
         public void Simple()
-        {            
+        {
+            // Select * from ScissorsEntry
+            new QuerySource<ScissorsEntry>()
+                .FetchSingle();
+
+            new QuerySource<ScissorsEntry>()
+                .Select(s => s)
+                .FetchSingle();
+
+
 
             // select 
             //     s.Id, s.UID,  a.Scissors, b.Entries 

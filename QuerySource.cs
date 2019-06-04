@@ -112,20 +112,51 @@ namespace cqorm
             return this;
         }
 
-        // The momemtn you select something the source changes
         public QuerySource<Q> Select<Q>(Expression<Func<T, Q>> select)
         {
-            var parse = new ExpressionParser(_query);
-            var field = parse.ParseField(select);
-            if (field is FieldName)
+            if (select is LambdaExpression lambda)
             {
-                _query.Fields = new List<Field> { field };
+                // Options allowed:
+                // 1. Whole object: .Select(s => s)
+                if (lambda.Body is ParameterExpression param)
+                {
+                    if (param.Type != _query.From.Type)
+                    {
+                        throw new Exception("Select object must any of the sources.");
+                    }
+                    _query.Fields  = param.Type.GetProperties()
+                        .Select(p => (Field)new FieldName(p.Name, _query.From))
+                        .ToList();
+
+                    return new QuerySource<Q>(_query);
+                }
+                
+                // 2. Selection: .Select(s => new { ... })
+                if (lambda.Body is NewExpression newx)
+                {
+                    var parse = new ExpressionParser(_query);
+                    var field = parse.ParseField(select);
+                    if (field is FieldName)
+                    {
+                        _query.Fields = new List<Field> { field };
+                    }
+                    if (field is FieldList list)
+                    {
+                        _query.Fields = list.Fields;
+                    }
+                    return new QuerySource<Q>(_query);
+                }
+
+                // 3. Constant: .Select(_ => 10)
+                if (lambda.Body is ConstantExpression constant)
+                {
+                    _query.Fields = new List<Field> { Field.ConstantString(constant.ToString() )};
+                    return new QuerySource<Q>(_query);
+                }
+
+                throw new Exception("Only all fields, selection of fields or constant allowd in select statement");
             }
-            if (field is FieldList list)
-            {
-                _query.Fields = list.Fields;
-            }
-            return new QuerySource<Q>(_query);
+            throw new Exception("Select must be lambda expression.");
         }
 
         public T FetchSingle()
