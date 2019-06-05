@@ -1,106 +1,62 @@
-Select ...
-FROM A
-JOIN b on ..
-JOIN c on ..
+BaseSource
+    -Order
+    -Where
+    -GroupBy 
+    -Joins
+    -Union
 
-nwe FromJoin(
-    Left = new FromTable("A"),
-    Right = new FromJoin
-    {
-        Left = FromTable("B")",
-        Right = FromTable("C")
-    }
-);
+Sources:
+1. Tables (from table)
+2. QuerySource (from query/subquery)
+3. JoinSource ( joining two Source)
+4. Constants
+5. Aggregates
 
+1. Select a,b from Scissors
 
-Only three sources:
-Tables (from table)
-QuerySource (from query/subquery)
-JoinSource ( joining two Source)
+    new TableSource<Scissors>
+        .Select(s => {
+            a = s.a,
+            b = s.b
+        })
 
-//AggregateSource (grouped Sources)
+2. Select * from (select a, b from Scissors)
 
+    new QuerySource()
+        new TableSource<Scissors>
+            .Select(s => {
+                a = s.a,
+                b = s.b
+            })
+    ).Select(a => a);
 
-        
-        private void ScissorTest()
-        {
-            var ScissorEntries = new DataSource<ScissorEnty>("ScissorEntry");
-            var Stations = new DataSource<Station>("Station");
+3. Select a from Scissors s
+    inner join Entries e on s.ScissorId = e.ScissorId
 
-            var a = ScissorEntries
-                .GroupBy(e => e.StationId)
-                .Select(e => new
-                {
-                    StationId = e.Key,
-                     Scissors = e.Distinct().Count()
-                });
+    new TableSource<Scissors>
+        .Select(s => s)
+        .InnerJoin(
+            new TableSource<Entries>(),
+            (s, e) => s.ScissorId == e.ScissorId
+        )
+        .Select((s, e) => new {
+            ...
+        })
 
-            // var b = ScissorEntries
-            //     .GroupBy(s => s.StationId)
-            //     .Select(s=> new {
-            //         StationId = s.Key,
-            //         Entries = s.Count()
-            //     });
+4. Select 1 as f1, 2 as f2, 3 as f3
 
-            // var res = a
-            // .InnerJoin(b, (s,e) => s.StationId == e.StationId)
-            // .InnerJoin(Stations, (s, u) => s.Right.StationId == u.Id)
-            // .Select(n => new {
-            //     UId = n.Right.Id,
-            //     Scissors = n.Left.Left.Scissors,
-            //     Entries = n.Left.Right.Entries
-            // })
-            // .FetchArray();
-        }
+    new ConstantSource()
+        .Select(new {
+            f1 = 1,
+            f2 = 2,
+            f3 = 3
+        })
 
-           // var db = new Database();
+5. Select id, count(*) from Scissors
 
-            // var res = db.Users
-            //     .Where(u => u.Id == 3)
-            //     .Select(u => u.Name)
-            //     .FetchSingle();
-
-            // // SubQuery
-            // // Select id * 2 from (select top 1 id from users where id == 3)
-            //  var bb = (db.Users
-            //     .Where(u => u.Id == 3)
-            //     .Select(u => u.Id))
-            //     .Select(a => a * 2)
-            //     .FetchSingle();
-
-            // // Updates
-            // db.Users
-            //     .Update(u => u.Age, 11)
-            //     .Update(u => u.Name, "NewName")
-            //     .Where(u => u.Id == 10);
-
-            // db.Users
-            //     .Update(u => u.Age, u => u.Age + 1)
-            //     .Where(u => u.Id == 10);
-
-            // // Delete
-            // db.Users.Delete(u => u.Age < 10);
-
-            // // inner join
-            // db.Users
-            //     .InnerJoin(db.Products, (u,p) => u.Id == p.UserId)
-            //     .Select(j => j.Right)
-            //     .FetchArray();
-
-            // // group by
-            // // Select user_id, count(p.id) from usres inner join products on user.id == products.user_id group by user_id
-            // var qq = db.Users
-            //     .InnerJoin(db.Products, (u,p) => u.Id == p.UserId)
-            //     .GroupBy(j => j.Left.Id)
-            //     .Select(s => new {
-            //         UserId = s.Key,
-            //         Count = s.Count()
-            //     }).FetchArray();
-
-
-
-            // .InnerJoin(db.Products, (a, p) => a.Count == p.Id)
-            // .Select(j => new {
-            //     Count = j.Left.Count,
-            //     Pid = j.Right.Desc
-            // });
+    new TableSource<Scissors>
+        .GroupBy(s => s.id)
+        .Select((group, aggregate) => new {
+            Id = group,
+            Count = aggregate.Count()
+        })

@@ -34,16 +34,51 @@ namespace cqorm
             Console.WriteLine(driver.Generate(query));
         }
 
-    
-        public void Simple()
+        public void Selects()
         {
-            // Select * from ScissorsEntry
+             // Select all
             new QuerySource<ScissorsEntry>()
                 .FetchSingle();
 
+            // Select all 
             new QuerySource<ScissorsEntry>()
                 .Select(s => s)
                 .FetchSingle();
+
+            // Select fields
+            new QuerySource<ScissorsEntry>()
+                .Select(s => new {
+                    Bat = s.Battery,
+                    Lat = s.Lat,
+                    Long = s.Long
+                })
+                .FetchSingle();
+
+            // select fields with math expressions
+            new QuerySource<ScissorsEntry>()
+                .Select(s => new {
+                    Bat2 = s.Battery * 2,
+                    LongLat = s.Long + s.Lat
+                })
+                .FetchSingle();
+
+            // string expression
+            new QuerySource<ScissorsEntry>()
+                .Select(s => new {
+                    Bat2 = s.Battery.ToString().Substring(0, 2),
+                    LongLat = s.Long.ToString() + '-' + s.Lat.ToString()
+                })
+                .FetchSingle();
+
+            // constant selections
+
+        }
+
+        public void Simple()
+        {
+           
+
+
 
 
 
@@ -71,16 +106,14 @@ namespace cqorm
                 .Select(g => new {
                     StationId = g.Key,
                     Scissors = g.CountDistinct(f => f.StationId)
-                });
-
-            var b = new QuerySource<ScissorsEntry>()
-                .GroupBy(s => s.StationId)
-                .Select(e => new {
-                    StationId = e.Key,
-                    Entries = e.Count()
-                });
-
-            var join = a.InnerJoin(b, (scissors, entries) => scissors.StationId == entries.StationId)
+                })
+                .InnerJoin(
+                    new QuerySource<ScissorsEntry>()
+                    .GroupBy(s => s.StationId)
+                    .Select(e => new {
+                        StationId = e.Key,
+                        Entries = e.Count()
+                    }),(scissors, entries) => scissors.StationId == entries.StationId)
                 .Select((scissor, entires) => new {
                     Scissors = scissor.Scissors,
                     Entires = entires.Entries
