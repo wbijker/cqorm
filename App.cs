@@ -63,12 +63,12 @@ namespace cqorm
                 .FetchSingle();
 
             // string expression
-            new QuerySource<ScissorsEntry>()
-                .Select(s => new {
-                    Bat2 = s.Battery.ToString().Substring(0, 2),
-                    LongLat = s.Long.ToString() + '-' + s.Lat.ToString()
-                })
-                .FetchSingle();
+            // new QuerySource<ScissorsEntry>()
+            //     .Select(s => new {
+            //         Bat2 = s.Battery.ToString().Substring(0, 2),
+            //         LongLat = s.Long.ToString() + '-' + s.Lat.ToString()
+            //     })
+            //     .FetchSingle();
 
             // constant selections
 
@@ -123,6 +123,7 @@ namespace cqorm
 
         public void Run()
         {
+            Selects();
             Simple();
             // ScissorTest();
             return;

@@ -131,7 +131,7 @@ namespace cqorm
                 {
                     if (param.Type != _query.From.Type)
                     {
-                        throw new Exception("Select object must any of the sources.");
+                        throw new Exception($"Select source must be of type {param.Type.ToString()}");
                     }
                     _query.Fields  = param.Type.GetProperties()
                         .Select(p => (Field)new FieldName(p.Name, _query.From))

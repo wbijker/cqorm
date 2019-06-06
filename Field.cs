@@ -89,6 +89,7 @@ namespace cqorm
         String,
         Double,
         Binary,
+        Bool
     }
 
     public class FieldList : Field

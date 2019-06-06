@@ -102,13 +102,16 @@ namespace cqorm
 
         private Field ParseConstant(ConstantExpression constant)
         {
-            if (constant.Type == typeof(string))
+            switch (constant.Value)
             {
-                return new Constant(ConstantType.String, constant.Value);
-            }
-            if (constant.Type == typeof(int))
-            {
-                return new Constant(ConstantType.Int, (int)constant.Value);
+                case string str:
+                    return new Constant(ConstantType.String, str);
+                case int i:
+                    return new Constant(ConstantType.Int, i);
+                case double d:
+                    return new Constant(ConstantType.Double, d);
+                case bool b:
+                    return new Constant(ConstantType.Bool, b);
             }
             throw new NotImplementedException();
         }
@@ -163,6 +166,8 @@ namespace cqorm
                     return FieldFunctionType.Lower;
                 case "ToUpper":
                     return FieldFunctionType.Upper;
+                case "Substring":
+                    return FieldFunctionType.Substring;
             }
             throw new NotImplementedException();
         }
