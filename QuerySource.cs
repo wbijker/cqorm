@@ -5,6 +5,15 @@ using System.Linq.Expressions;
 
 namespace cqorm
 {
+    // Constant source
+    public class NoSource : BaseSource
+    {
+        public QuerySource<T> Select<T>(Expression<Func<T>> select)
+        {
+            return new QuerySource<T>(null);
+        }
+    }
+
     // Query source from Table or (sub)query
     public class QuerySource<T> : BaseSource
     {
