@@ -61,14 +61,20 @@ namespace cqorm
                     LongLat = s.Long + s.Lat
                 })
                 .FetchSingle();
+            
+            // s.Battery -> NamedField
+            //     .ToString -> MethodCall
+            //         .ToString -> MethodCall with arguments (FieldConstant, FieldConstant)
 
+            // substr(cast(s.Battery as text), 0, 2)
+            
             // string expression
-            // new QuerySource<ScissorsEntry>()
-            //     .Select(s => new {
-            //         Bat2 = s.Battery.ToString().Substring(0, 2),
-            //         LongLat = s.Long.ToString() + '-' + s.Lat.ToString()
-            //     })
-            //     .FetchSingle();
+            new QuerySource<ScissorsEntry>()
+                .Select(s => new {
+                    Bat2 = s.Battery.ToString().Substring(0, 2),
+                    LongLat = s.Long.ToString() + '-' + s.Lat.ToString()
+                })
+                .FetchSingle();
 
             // constant selections
 
