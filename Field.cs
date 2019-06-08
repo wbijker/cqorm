@@ -56,9 +56,9 @@ namespace cqorm
             return new FieldRowFunction(function, Arguments);
         }
 
-        public static FieldFunction Function(FieldFunctionType function, params Field[] Arguments)
+        public static FieldFunction Function(FieldFunctionType function, Field on, params Field[] Arguments)
         {
-            return new FieldFunction(function, Arguments);
+            return new FieldFunction(function, on, Arguments);
         }
 
         public static FieldMath Math(Field a, FieldMathOperator op, Field b)
@@ -70,7 +70,7 @@ namespace cqorm
         {
             return new FieldParameter(name);
         }
-
+        
         public static FieldList List(params Field[] fields)
         {
             return new FieldList(fields);
@@ -87,6 +87,7 @@ namespace cqorm
     {
         Int,
         String,
+        Char,
         Double,
         Binary,
         Bool
@@ -117,6 +118,13 @@ namespace cqorm
     public enum FieldSpecialType
     {
         All
+    }
+
+    public class FieldCast : Field
+    {
+        public FieldCast()
+        {
+        }
     }
 
     // Represents a * as in count(*)
@@ -196,18 +204,22 @@ namespace cqorm
         Trim,
         Length,
         Replace,
-        Contains
+        Contains,
+        ToString
     }
 
     // Coalesce, string functions, date functions, number functions
     public class FieldFunction : Field
     {
-        public FieldFunction(FieldFunctionType function, params Field[] Arguments)
+        public FieldFunction(FieldFunctionType function, Field on, params Field[] Arguments)
         {
+            this.On = on;
             this.Function = function;
             this.Arguments = new List<Field>(Arguments);
 
         }
+
+        public Field On { get; set; }
         public FieldFunctionType Function { get; set; }
         public List<Field> Arguments { get; set; }
     }

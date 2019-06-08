@@ -53,8 +53,8 @@ namespace cqorm
 
                 }
 
-                throw new Exception("Only all fields, selection of fields or constant allowd in select statement");
             }
+            throw new Exception("Only all fields, selection of fields or constant allowd in select statement");
         }
 
         private SelectQuery _query;
@@ -154,6 +154,8 @@ namespace cqorm
         {
             switch (constant.Value)
             {
+                case char ch:
+                    return new Constant(ConstantType.Char, ch);
                 case string str:
                     return new Constant(ConstantType.String, str);
                 case int i:
@@ -218,6 +220,8 @@ namespace cqorm
                     return FieldFunctionType.Upper;
                 case "Substring":
                     return FieldFunctionType.Substring;
+                case "ToString":
+                    return FieldFunctionType.ToString;
             }
             throw new NotImplementedException();
         }
