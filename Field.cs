@@ -120,6 +120,8 @@ namespace cqorm
         All
     }
 
+    // Not a function or aggregate
+    // CAST(9.5 AS INT)
     public class FieldCast : Field
     {
         public FieldCast()
