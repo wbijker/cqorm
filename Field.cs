@@ -56,9 +56,9 @@ namespace cqorm
             return new FieldRowFunction(function, Arguments);
         }
 
-        public static FieldFunction Function(FieldFunctionType function, Field on, params Field[] Arguments)
+        public static FieldFunction Function(FieldFunctionType function, Field source, params Field[] Arguments)
         {
-            return new FieldFunction(function, on, Arguments);
+            return new FieldFunction(function, source, Arguments);
         }
 
         public static FieldMath Math(Field a, FieldMathOperator op, Field b)
@@ -211,15 +211,15 @@ namespace cqorm
     // Coalesce, string functions, date functions, number functions
     public class FieldFunction : Field
     {
-        public FieldFunction(FieldFunctionType function, Field on, params Field[] Arguments)
+        public FieldFunction(FieldFunctionType function, Field source, params Field[] Arguments)
         {
-            this.On = on;
+            this.Source = source;
             this.Function = function;
             this.Arguments = new List<Field>(Arguments);
 
         }
 
-        public Field On { get; set; }
+        public Field Source { get; set; }
         public FieldFunctionType Function { get; set; }
         public List<Field> Arguments { get; set; }
     }

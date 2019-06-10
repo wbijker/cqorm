@@ -112,6 +112,7 @@ namespace cqorm
                     case ConstantType.Double:
                         return c.Value.ToString();
                     case ConstantType.String:
+                    case ConstantType.Char:
                         return $"'{c.Value.ToString()}'";
                 }
                 throw new NotImplementedException();
@@ -133,7 +134,8 @@ namespace cqorm
             if (f is FieldFunction func)
             {
                 var args = GenerateFields(func.Arguments);
-                return $"{GenerateFunction(func.Function)}({args})";
+                var source = GenerateField(func.Source);
+                return $"{GenerateFunction(func.Function)}({source}, {args})";
             }
             if (f is FieldMath math)
             {
@@ -150,6 +152,10 @@ namespace cqorm
                     return "lower";
                 case FieldFunctionType.Upper:
                     return "upper";
+                case FieldFunctionType.Substring:
+                    return "substr";
+                case FieldFunctionType.ToString:
+                    return "castToString";
             }
             throw new NotImplementedException();
         }

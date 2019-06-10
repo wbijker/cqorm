@@ -205,7 +205,8 @@ namespace cqorm
                 // All string functions here
                 // with call.Argu,ents
                 // call.Method.Name == "ToLower";
-                return new FieldFunction(ToStringFunctionType(call.Method.Name), ParseField(call.Object));
+                var args = call.Arguments.Select(a => ParseField(a)).ToList();
+                return new FieldFunction(ToStringFunctionType(call.Method.Name), ParseField(call.Object), args.ToArray());
             }
             throw new NotImplementedException();
         }
