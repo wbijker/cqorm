@@ -37,30 +37,30 @@ namespace cqorm
         public void Selects()
         {
              // Select all
-            new QuerySource<ScissorsEntry>()
-                .FetchSingle();
+            // new QuerySource<ScissorsEntry>()
+            //     .FetchSingle();
 
-            // Select all 
-            new QuerySource<ScissorsEntry>()
-                .Select(s => s)
-                .FetchSingle();
+            // // Select all 
+            // new QuerySource<ScissorsEntry>()
+            //     .Select(s => s)
+            //     .FetchSingle();
 
-            // Select fields
-            new QuerySource<ScissorsEntry>()
-                .Select(s => new {
-                    Bat = s.Battery,
-                    Lat = s.Lat,
-                    Long = s.Long
-                })
-                .FetchSingle();
+            // // Select fields
+            // new QuerySource<ScissorsEntry>()
+            //     .Select(s => new {
+            //         Bat = s.Battery,
+            //         Lat = s.Lat,
+            //         Long = s.Long
+            //     })
+            //     .FetchSingle();
 
-            // select fields with math expressions
-            new QuerySource<ScissorsEntry>()
-                .Select(s => new {
-                    Bat2 = s.Battery * 2,
-                    LongLat = s.Long + s.Lat
-                })
-                .FetchSingle();
+            // // select fields with math expressions
+            // new QuerySource<ScissorsEntry>()
+            //     .Select(s => new {
+            //         Bat2 = s.Battery * 2,
+            //         LongLat = s.Long + s.Lat
+            //     })
+            //     .FetchSingle();
             
             // s.Battery -> NamedField
             //     .ToString -> MethodCall
@@ -130,7 +130,7 @@ namespace cqorm
         public void Run()
         {
             Selects();
-            Simple();
+            // Simple();
             // ScissorTest();
             return;
         }

@@ -133,9 +133,9 @@ namespace cqorm
             }
             if (f is FieldFunction func)
             {
-                var args = GenerateFields(func.Arguments);
-                var source = GenerateField(func.Source);
-                return $"{GenerateFunction(func.Function)}({source}, {args})";
+                // Combined source and arguments
+                var args = GenerateFields(func.Arguments.Prepend(func.Source));
+                return $"{GenerateFunction(func.Function)}({args})";
             }
             if (f is FieldMath math)
             {

@@ -244,7 +244,7 @@ namespace cqorm
             }
             if (nodeType == ExpressionType.Add)
             {
-                return FieldMathOperator.And;
+                return FieldMathOperator.Plus;
             }
             if (nodeType == ExpressionType.GreaterThan)
             {
