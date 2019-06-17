@@ -141,7 +141,25 @@ namespace cqorm
             {
                 return $"{GenerateField(math.Left)} {OperatorStr(math.Operator)} {GenerateField(math.Right)}";
             }
+            if (f is FieldCast cast)
+            {
+                return $"CAST({GenerateField(cast.Field)} AS {CastType(cast.ToType)})";
+            }
             throw new NotImplementedException(f.ToString());
+        }
+
+        private string CastType(FieldCastType toType)
+        {
+            switch (toType)
+            {
+                case FieldCastType.String:
+                    return "string";
+                case FieldCastType.Double:
+                    return "double";
+                case FieldCastType.Int:
+                    return "int";
+            }
+            throw new NotImplementedException();
         }
 
         private object GenerateFunction(FieldFunctionType function)
@@ -152,10 +170,8 @@ namespace cqorm
                     return "lower";
                 case FieldFunctionType.Upper:
                     return "upper";
-                case FieldFunctionType.Substring:
+                case FieldFunctionType.Substring: 
                     return "substr";
-                case FieldFunctionType.ToString:
-                    return "castToString";
             }
             throw new NotImplementedException();
         }

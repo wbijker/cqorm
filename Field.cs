@@ -120,13 +120,25 @@ namespace cqorm
         All
     }
 
+    public enum FieldCastType
+    {
+        Int,
+        String,
+        Double
+    }
+
     // Not a function or aggregate
     // CAST(9.5 AS INT)
     public class FieldCast : Field
     {
-        public FieldCast()
+        public FieldCast(Field field, FieldCastType type)
         {
+            Field = field;
+            ToType = type;
         }
+
+        public Field Field { get; set; }
+        public FieldCastType ToType { get; set; }
     }
 
     // Represents a * as in count(*)
@@ -206,8 +218,7 @@ namespace cqorm
         Trim,
         Length,
         Replace,
-        Contains,
-        ToString
+        Contains
     }
 
     // Coalesce, string functions, date functions, number functions

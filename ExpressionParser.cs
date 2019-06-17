@@ -199,9 +199,16 @@ namespace cqorm
                 throw new NotImplementedException();
             }
 
+            
+
             // _query.From
             if (call.Type == typeof(string))
             {
+                // First check casts
+                if (call.Method.Name == "ToString")
+                {
+                    return new FieldCast(ParseField(call.Object), FieldCastType.String);
+                }
                 // All string functions here
                 // with call.Argu,ents
                 // call.Method.Name == "ToLower";
@@ -221,8 +228,6 @@ namespace cqorm
                     return FieldFunctionType.Upper;
                 case "Substring":
                     return FieldFunctionType.Substring;
-                case "ToString":
-                    return FieldFunctionType.ToString;
             }
             throw new NotImplementedException();
         }
