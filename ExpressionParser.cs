@@ -155,15 +155,15 @@ namespace cqorm
             switch (constant.Value)
             {
                 case char ch:
-                    return new Constant(ConstantType.Char, ch);
+                    return new Constant(FieldType.Char, ch);
                 case string str:
-                    return new Constant(ConstantType.String, str);
+                    return new Constant(FieldType.String, str);
                 case int i:
-                    return new Constant(ConstantType.Int, i);
+                    return new Constant(FieldType.Int, i);
                 case double d:
-                    return new Constant(ConstantType.Double, d);
+                    return new Constant(FieldType.Double, d);
                 case bool b:
-                    return new Constant(ConstantType.Bool, b);
+                    return new Constant(FieldType.Bool, b);
             }
             throw new NotImplementedException();
         }
@@ -207,7 +207,7 @@ namespace cqorm
                 // First check casts
                 if (call.Method.Name == "ToString")
                 {
-                    return new FieldCast(ParseField(call.Object), FieldCastType.String);
+                    return new FieldCast(ParseField(call.Object), FieldType.String);
                 }
                 // All string functions here
                 // with call.Argu,ents

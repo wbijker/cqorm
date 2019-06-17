@@ -108,11 +108,11 @@ namespace cqorm
             {
                 switch (c.Type)
                 {
-                    case ConstantType.Int:
-                    case ConstantType.Double:
+                    case FieldType.Int:
+                    case FieldType.Double:
                         return c.Value.ToString();
-                    case ConstantType.String:
-                    case ConstantType.Char:
+                    case FieldType.String:
+                    case FieldType.Char:
                         return $"'{c.Value.ToString()}'";
                 }
                 throw new NotImplementedException();
@@ -148,15 +148,15 @@ namespace cqorm
             throw new NotImplementedException(f.ToString());
         }
 
-        private string CastType(FieldCastType toType)
+        private string CastType(FieldType toType)
         {
             switch (toType)
             {
-                case FieldCastType.String:
+                case FieldType.String:
                     return "string";
-                case FieldCastType.Double:
+                case FieldType.Double:
                     return "double";
-                case FieldCastType.Int:
+                case FieldType.Int:
                     return "int";
             }
             throw new NotImplementedException();

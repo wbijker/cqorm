@@ -33,12 +33,12 @@ namespace cqorm
         // either constant, name, aggregate, distinct, fieldfunction, fieldExpression
         public static Constant ConstantString(string value)
         {
-            return new Constant(ConstantType.String, value);
+            return new Constant(FieldType.String, value);
         }
 
         public static Constant ConstantInt(string value)
         {
-            return new Constant(ConstantType.Int, value);
+            return new Constant(FieldType.Int, value);
         }
 
         public static FieldName Name(string name, From source)
@@ -83,7 +83,7 @@ namespace cqorm
 
     }
 
-    public enum ConstantType
+    public enum FieldType
     {
         Int,
         String,
@@ -105,13 +105,13 @@ namespace cqorm
 
     public class Constant : Field
     {
-        public Constant(ConstantType type, object value)
+        public Constant(FieldType type, object value)
         {
             this.Value = value;
             this.Type = type;
 
         }
-        public ConstantType Type { get; set; }
+        public FieldType Type { get; set; }
         public object Value { get; set; }
     }
 
@@ -120,25 +120,18 @@ namespace cqorm
         All
     }
 
-    public enum FieldCastType
-    {
-        Int,
-        String,
-        Double
-    }
-
     // Not a function or aggregate
     // CAST(9.5 AS INT)
     public class FieldCast : Field
     {
-        public FieldCast(Field field, FieldCastType type)
+        public FieldCast(Field field, FieldType type)
         {
             Field = field;
             ToType = type;
         }
 
         public Field Field { get; set; }
-        public FieldCastType ToType { get; set; }
+        public FieldType ToType { get; set; }
     }
 
     // Represents a * as in count(*)
