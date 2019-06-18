@@ -44,7 +44,7 @@ namespace cqorm
             if (exp is NewExpression newx)
             {
                 var list = newx.Arguments.Select((a,i) => ParseFieldAlias(a, newx.Members[i].Name)).ToArray();
-                return Field.List(list);
+                return new FieldList(list);
             }
             if (exp is ConstantExpression constant)
             {
@@ -134,14 +134,13 @@ namespace cqorm
                     // Count(distinct ...)
                     return new FieldAggregate(AggregateFunction.Count, new List<Field> {
                         new FieldRowFunction(FieldRowFunctionType.Distinct, args.ToArray())
-                    }
-);
+                    });
                 }
                 if (call.Method.Name == "Count")
                 {
                     if (args.Count() == 0)
                     {
-                        args = new List<Field> { Field.Special(FieldSpecialType.All) };
+                        args = new List<Field> { new FieldSpecial(FieldSpecialType.All) };
                     }
                     // Count cannot have arguments?
                     return new FieldAggregate(AggregateFunction.Count, args);
@@ -186,6 +185,10 @@ namespace cqorm
         {
             var left = ParseField(bin.Left);
             var right = ParseField(bin.Right);
+            if (left.FieldType == FieldType.String)
+            {
+                return new FieldMath(left, FieldMathOperator.StringConcat, right);
+            } 
             
             return new FieldMath(left, ParseOperator(bin.NodeType), right);
         }

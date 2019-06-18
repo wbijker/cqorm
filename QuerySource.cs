@@ -159,7 +159,7 @@ namespace cqorm
                 // 3. Constant: .Select(_ => 10)
                 if (lambda.Body is ConstantExpression constant)
                 {
-                    _query.Fields = new List<Field> { Field.ConstantString(constant.ToString() )};
+                    _query.Fields = new List<Field> { new Constant(FieldType.String, constant )};
                     return new QuerySource<Q>(_query);
                 }
 

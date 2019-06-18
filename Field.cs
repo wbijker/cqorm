@@ -28,55 +28,8 @@ namespace cqorm
 {
     public abstract class Field
     {
-        public FieldType ResultType { get; set; }
+        public FieldType FieldType { get; set; }
         public string Alias { get; set; }
-        
-        // either constant, name, aggregate, distinct, fieldfunction, fieldExpression
-        public static Constant ConstantString(string value)
-        {
-            return new Constant(FieldType.String, value);
-        }
-
-        public static Constant ConstantInt(string value)
-        {
-            return new Constant(FieldType.Int, value);
-        }
-
-        public static FieldName Name(string name, From source)
-        {
-            return new FieldName(name, source);
-        }
-
-        public static FieldAggregate Aggregate(AggregateFunction function, params Field[] arguments)
-        {
-            return new FieldAggregate(function, new List<Field>(arguments));
-        }
-
-        public static FieldRowFunction RowFunction(FieldRowFunctionType function, params Field[] Arguments)
-        {
-            return new FieldRowFunction(function, Arguments);
-        }
-
-        public static FieldFunction Function(FieldFunctionType function, Field source, params Field[] Arguments)
-        {
-            return new FieldFunction(function, source, Arguments);
-        }
-
-        public static FieldMath Math(Field a, FieldMathOperator op, Field b)
-        {
-            return new FieldMath(a, op, b);
-        }
-
-        public static FieldList List(params Field[] fields)
-        {
-            return new FieldList(fields);
-        }
-
-        public static FieldSpecial Special(FieldSpecialType fieldType)
-        {
-            return new FieldSpecial(fieldType);
-        }
-
     }
 
     public enum FieldType
@@ -104,10 +57,8 @@ namespace cqorm
         public Constant(FieldType type, object value)
         {
             this.Value = value;
-            this.Type = type;
-
+            this.FieldType = type;
         }
-        public FieldType Type { get; set; }
         public object Value { get; set; }
     }
 
@@ -133,14 +84,12 @@ namespace cqorm
     // Represents a * as in count(*)
     public class FieldSpecial : Field
     {
-        public FieldSpecial(FieldSpecialType fieldType)
+        public FieldSpecial(FieldSpecialType specialType)
         {
-            this.FieldType = fieldType;
+            SpecialType = specialType;
 
         }
-        public FieldSpecialType FieldType { get; set; }
-
-
+        public FieldSpecialType SpecialType { get; set; }
     }
 
     // a.Name
@@ -239,6 +188,7 @@ namespace cqorm
         LessEqualThan,
         Or,
         And,
+        StringConcat
     }
 
     public class FieldMath : Field

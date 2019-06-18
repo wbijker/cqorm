@@ -5,35 +5,6 @@ namespace cqorm
 {
     public class App
     {
-
-        private void QueryBuilder()
-        {
-            // Select * from users u
-            // inner join Procuts on p.user_id = u.id
-            
-
-            var query = new SelectQuery();
-            query.From = new FromTable(typeof(ScissorsEntry), "s", "ScissorsEntry");
-            query.Fields = new List<Field> 
-            {
-                Field.Name("Username", query.From),
-                Field.Name("Password", query.From),
-                Field.Name("Email", query.From)
-            };
-            query.Where = new FieldMath(
-                Field.Function(FieldFunctionType.Lower, Field.Name("Username", query.From)), 
-                FieldMathOperator.Equal,
-                Field.ConstantString("Willem"));
-            // query.Join = new QueryJoin
-            // {
-            //     Source = new FromTable(typeof(Scissor), "c", "Scissor"),
-            //     On = null
-            // };
-
-            ISQLDriver driver = new SQLLiteDriver();
-            Console.WriteLine(driver.Generate(query));
-        }
-
         public void Selects()
         {
              // Select all

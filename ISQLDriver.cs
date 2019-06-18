@@ -97,7 +97,7 @@ namespace cqorm
         {
             if (f is FieldSpecial special)
             {
-                switch (special.FieldType)
+                switch (special.SpecialType)
                 {
                     case FieldSpecialType.All:
                         return "*";
@@ -106,7 +106,7 @@ namespace cqorm
             }
             if (f is Constant c)
             {
-                switch (c.Type)
+                switch (c.FieldType)
                 {
                     case FieldType.Int:
                     case FieldType.Double:
