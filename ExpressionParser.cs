@@ -7,56 +7,6 @@ namespace cqorm
 {
     public class ExpressionParser
     {
-
-        public static Field ParseSelectField(Type type, From from, Expression exp, Field carry = null)
-        {   
-            if (exp is LambdaExpression lambda)
-            {
-                // Options allowed:
-                // 1. Whole object: .Select(s => s)
-                if (lambda.Body is ParameterExpression param)
-                {
-                    if (param.Type != type)
-                    {
-                        throw new Exception($"Select source must be of type {type.ToString()}");
-                    }
-
-                    // Select all fields
-                    return Field.List(
-                        type.GetProperties()
-                        .Select(p => (Field)new FieldName(p.Name, from))
-                        .ToArray()
-                    );
-                }
-                
-                // 2. Selection: .Select(s => new { ... })
-                if (lambda.Body is NewExpression newx)
-                {
-                    
-                }
-
-                // 3. Single Constant: .Select(_ => 10)
-                if (lambda.Body is ConstantExpression constant)
-                {
-                    // todo: need to cater for different types here
-                    return Field.ConstantString(constant.ToString());
-                }
-
-                // 4. Single epxressino: .Select(s => s.Field * 2)
-                if (lambda.Body is UnaryExpression unary)
-                {
-
-                }
-
-                if (lambda.Body is BinaryExpression bi)
-                {
-
-                }
-
-            }
-            throw new Exception("Only all fields, selection of fields or constant allowd in select statement");
-        }
-
         private SelectQuery _query;
 
         public ExpressionParser(SelectQuery query)
@@ -234,7 +184,10 @@ namespace cqorm
 
         public FieldMath ParseBinaryExpression(BinaryExpression bin)
         {
-            return new FieldMath(ParseField(bin.Left), ParseOperator(bin.NodeType), ParseField(bin.Right));
+            var left = ParseField(bin.Left);
+            var right = ParseField(bin.Right);
+            
+            return new FieldMath(left, ParseOperator(bin.NodeType), right);
         }
 
         private FieldMathOperator ParseOperator(ExpressionType nodeType)

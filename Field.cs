@@ -28,6 +28,7 @@ namespace cqorm
 {
     public abstract class Field
     {
+        public FieldType ResultType { get; set; }
         public string Alias { get; set; }
         
         // either constant, name, aggregate, distinct, fieldfunction, fieldExpression
@@ -66,11 +67,6 @@ namespace cqorm
             return new FieldMath(a, op, b);
         }
 
-        public static FieldParameter Param(string name)
-        {
-            return new FieldParameter(name);
-        }
-        
         public static FieldList List(params Field[] fields)
         {
             return new FieldList(fields);
@@ -243,16 +239,6 @@ namespace cqorm
         LessEqualThan,
         Or,
         And,
-    }
-
-    public class FieldParameter : Field
-    {
-        public string Name { get; set; }
-
-        public FieldParameter(string name)
-        {
-            Name = name;
-        }
     }
 
     public class FieldMath : Field
