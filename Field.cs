@@ -26,12 +26,6 @@ using System.Collections.Generic;
 
 namespace cqorm
 {
-    public abstract class Field
-    {
-        public FieldType FieldType { get; set; }
-        public string Alias { get; set; }
-    }
-
     public enum FieldType
     {
         Int,
@@ -40,6 +34,24 @@ namespace cqorm
         Double,
         Binary,
         Bool
+    }
+    
+    public abstract class FieldExpression
+    {
+        // Each expression shoudl have a return type
+        public FieldType FieldType { get; set; }
+    }
+
+    public abstract class SelectField
+    {
+        public string Alias { get; set; }
+        public FieldExpression Expression { set; get; }
+    }
+
+    public abstract class Field
+    {
+        public FieldType FieldType { get; set; }
+        public string Alias { get; set; }
     }
 
     public class FieldList : Field
